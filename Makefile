@@ -9,5 +9,5 @@ html:
 
 pdf:
 	pandoc --output thesis.pdf \
-		--include-before-body preamble.tex \
+		--include-in-header preamble.tex \
 		*/text.md
