@@ -11,7 +11,7 @@ You'll need:
 - `pandoc-eqnos`
 - a LaTeX distribution
 
-e.g. on OSX.
+e.g. on OSX:
 
 First install MacTeX from: https://www.tug.org/mactex/
 
