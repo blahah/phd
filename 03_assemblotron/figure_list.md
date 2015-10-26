@@ -87,9 +87,11 @@ TODO:
 
 ## Subsampling strategies
 
+The obvious way is to take random samples from the reads, but because RNAseq will sample highly-expressed transcripts much more often, this will create a subsample that focuses on these transcripts.
 
+TODO: test this!
 
-The obvious way is to take random samples from the reads, but because RNAseq will sample highly-expressed transcripts much more often, this will create a subsample that focuses on these transcripts. It will also lead to low coverage on most transcripts, so the assembly will always be fragmented and probably not representative. Ideally the subsample will sample random transcripts, taking all the reads from the sampled transripts. This section should evaluate whether these concerns are valid for the naive sampling, and if so explain alternative strategies.
+It will also lead to low coverage on most transcripts, so the assembly will always be fragmented and probably not representative. Ideally the subsample will sample random transcripts, taking all the reads from the sampled transripts. This section should evaluate whether these concerns are valid for the naive sampling, and if so explain alternative strategies.
 
 ### Explain strategies
 
