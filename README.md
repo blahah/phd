@@ -2,6 +2,8 @@
 
 This is my PhD thesis.
 
+Note: It may not compile cleanly until I submit.
+
 ### Installing pre-requisites
 
 You'll need:
