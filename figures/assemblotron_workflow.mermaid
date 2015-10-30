@@ -1,0 +1,13 @@
+graph LR
+  input[Paired-end<br/>RNA-seq reads]
+  diginorm[Digital<br/>normalisation]
+  sample[Read sampling<br/>x3 replicates]
+  optimise((Optimise settings<br/>for each assembler))
+  assemble[Assemble with best settings<br/>from each assembler]
+  merge[Merge assemblies to<br/>generate final assembly]
+  input-->diginorm
+  diginorm-->|normalised<br>reads|sample
+  sample-->|sampled<br>reads|optimise
+  optimise-->|optimal<br>settings|assemble
+  diginorm-->|normalised<br>reads|assemble
+  assemble-->|individual<br>assemblies|merge
