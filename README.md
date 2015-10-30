@@ -19,7 +19,7 @@ Note: It may not compile cleanly while it's a WIP. I'll make releases as each ch
 
 ### Contributing
 
-I'm putting work here *as I write it*. People often seem afraid to do this, but I make mistaked like everyone else, and I'm happy with that.
+I'm putting work here *as I write it*. People often seem afraid to do this, but I make mistaked like everyone else (edit: see!), and I'm happy with that.
 
 If you feel like reading the work, I'd love to hear what you think. Comments, questions, suggestions, and pointing out mistakes, stupidity or anything else, are all welcome! Please create an issue. Or email me (rds45<at>cam.ac.uk) if you'd prefer to talk in private (though I'm happy to be called out in public).
 
