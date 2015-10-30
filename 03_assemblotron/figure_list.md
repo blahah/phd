@@ -50,8 +50,6 @@ DONE:
 - move all ad-hoc code into the paper CLI
   - done for data downloading and unpacking
   - need to add in running assemblotron for samples (part done)
-
-TODO:
 - rerun the sweep
   - set running for ath @2015-10-09T13:37:34+01:00
     - some failed:
@@ -59,8 +57,12 @@ TODO:
       - check that all the data are present for both sweep and graph
       - no just missing graph samples 20% rep 1 and 2 - set running @2015-10-11T18:22:28+01:00
   - next run for yeast (currently running on all data! 2015-10-23T03:46:30+01:00)
-  - then copy all data back to my machine
-- make a draft figure with a plot of the existing results
+
+TODO FOR DRAFT:
+- copy all sweep data back to my machine
+- make a draft figure with a plot of the existing results for yeast
+
+TODO FOR FINAL:
 - choose two more species (a mammal and an insect maybe?)
 - find good datasets for those extra species
 - create the full figure
@@ -79,7 +81,11 @@ Plan:
 - also find some bigger datasets and run a handful of parameter combinations
 - do subsets in a range of sizes from a larger dataset and show growth of resource use with increasing dataset size
 
-TODO:
+TODO FOR DRAFT:
+  - mock some numbers, or get some from literature
+  - make a plot or table showing results
+
+TODO FOR FINAL:
   - ensure these metrics are captured for the sweep in previous seciton
   - re-run the sweep (~48h)
   - find a good large dataset
@@ -89,7 +95,11 @@ TODO:
 
 The obvious way is to take random samples from the reads, but because RNAseq will sample highly-expressed transcripts much more often, this will create a subsample that focuses on these transcripts.
 
-TODO: test this!
+TODO FOR FINAL:
+- test how sampling works by using a reference
+  - take reads from full dataset and quantify with salmon
+  - then take reads from samples and quantify with salmon
+  - look at whether expression level of transcripts affects their prob of being included in the sample
 
 It will also lead to low coverage on most transcripts, so the assembly will always be fragmented and probably not representative. Ideally the subsample will sample random transcripts, taking all the reads from the sampled transripts. This section should evaluate whether these concerns are valid for the naive sampling, and if so explain alternative strategies.
 
@@ -102,16 +112,19 @@ TODO: diagram showing how each method works, highlighting the differences
 Key questions:
 
 - How representative is score distribution of subsetted reads vs full reads?
-- Which is better, read sampling or partition sampling?
+- Which is better, stream sampling or partition sampling?
 - What is the optimal sampling rate (i.e. that maximises speed whilst minimising the error rate)?
 
 DONE:
   - code a sweep for each sampling method, with sampling at various rates, commit code
   - run the sweep on yeast data
 
-TODO:
+TODO FOR DRAFT:
   - design plot that shows how each method performs
-  - run the sweep on arabidopsis data
+
+TODO:
+  - run the sweep on arabidopsis data (Currently running)
+
 
 ## Optimisation strategies
 
@@ -126,6 +139,9 @@ Key questions:
 - How reliably does each method reach the true optimum?
 - How rapidly?
 - Does performance of each method vary between assemblers, or read datasets?
+
+TODO FOR DRAFT:
+  - add
 
 TODO:
   - run assemblotron with each method on a variety of datasets and assemblers
