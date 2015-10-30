@@ -1,8 +1,8 @@
-all: pdf html
+all: html pdf
 
 html:
 	pandoc --output thesis.html \
-		--include-before-body preamble.tex \
+		--include-in-header preamble.tex \
 		--standalone \
 		--section-divs \
 		*/text.md
