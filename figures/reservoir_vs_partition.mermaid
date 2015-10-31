@@ -1,0 +1,25 @@
+graph TD
+
+subgraph A. Reservoir sampling
+  input_r[<b>Input</b><br>N Paired-end<br/>RNA-Seq reads]
+  reservoir((Create reservoir<br>containing first K<br>read pairs))
+  looper(("Loop through<br>remaining reads<br>i=[K+1:N]"))
+  sampling_r(("For each read i:<br>sample integer J in [1:i]<br>if J&lt;K replace position J<br>in reservoir"))
+  output_r[<b>Output</b><br>K read pairs]
+  input_r-->reservoir
+  reservoir-->looper
+  looper-->sampling_r
+  sampling_r-->output_r
+end
+
+subgraph B. Partition sampling
+  input_p[<b>Input</b><br>Paired-end<br/>RNA-Seq reads]
+  debrujn_p((Build a<br>de-Brujn graph))
+  partition_p((Partition<br>the graph))
+  sampling_p(("Sample P%<br>of partitions"))
+  output_p[<b>Output</b><br>Read pairs mapping<br>to sampled partitions]
+  input_p-->debrujn_p
+  debrujn_p-->partition_p
+  partition_p-->sampling_p
+  sampling_p-->output_p
+end
