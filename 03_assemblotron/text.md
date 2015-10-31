@@ -17,6 +17,17 @@ In this chapter I will explore how a transcriptome assembly might be optimised a
 
 ## Assembly is computationally expensive, making exhaustive optimisation impossible
 
+<!-- Data from table 4 in khmer diginorm paper http://arxiv.org/pdf/1203.4802v2.pdf -->
+
+Table: Time taken to assemble *de-novo* transcriptomes of Yeast and Mouse from 100 million paired-end RNA-seq reads, using either Oases or Trinity (TODO: cite diginorm paper).
+
+| Assembly        | N reads | Time (min) |
+|:----------------|:--------|:-----------|
+| Yeast (Oases)   | 100m    | 181        |
+| Yeast (Trinity) | 100m    | 887        |
+| Mouse (Oases)   | 100m    | 761        |
+| Moust (Trinity) | 100m    | 2297       |
+
 ## Read sampling gives a speedup while preserving quality distribution
 
 ## Optimisation strategies
