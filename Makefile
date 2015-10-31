@@ -17,4 +17,4 @@ pdf:
 # (re)make figure images from their input data
 figureimg:
 	mermaid --outputDir figures figures/*.mermaid
-	mmv "figures/*.mermaid.png" "figures/#1.png"
+	-mmv "figures/*.mermaid.png" "figures/#1.png"
