@@ -30,6 +30,8 @@ Table: Time taken to assemble *de-novo* transcriptomes of Yeast and Mouse from 1
 
 ## Read sampling gives a speedup while preserving quality distribution
 
+![Two strategies for sampling RNA-Seq read pairs. (A) Reservoir sampling produces a uniform random sample of the input read pairs in a single pass through the input files. This method samples reads uniformly. (B) Partition sampling builds a de-Brujn graph from the reads and samples connected partitions of the graph before outputting the reads from the sampled partitions. This method samples transcripts/genes uniformly.](figures/reservoir_vs_partition.png)
+
 ## Optimisation strategies
 
 ## Assemblotron
