@@ -1,0 +1,218 @@
+@import url(https://fonts.googleapis.com/css?family=Hind:400,500,600,700,300|Arvo:400,400italic,700,700italic|Inconsolata:400,700&subset=latin,latin-ext);
+
+/*font-family: 'Hind', sans-serif;*/
+/*font-family: 'Arvo', serif;*/
+/*font-family: 'Inconsolata', ;*/
+
+/* colour scheme can be expanded with */
+/* http://www.color-hex.com/color/6495ed */
+
+#header {
+  margin: 0 auto;
+  padding: 50px;
+  width: 80%;
+  font-size: 120%;
+  color: #324a76;
+}
+
+.title {
+  color: #324a76;
+  line-height: 130%;
+  text-align: justify;
+  letter-spacing: 0.04em;
+  word-spacing: 0.2em;
+}
+
+.author {
+  color: #0a0e17;
+  text-align: right;
+  border: 0;
+  font-size: 0.8em;
+}
+
+html {
+  background-color: #333;
+}
+
+body {
+  margin: auto;
+  padding: 1em 2em;
+  width: 50em;
+  max-width: 90%;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  color: black;
+  font-family: 'Hind', sans-serif;
+  font-size: 1.5em;
+  line-height: 1.5;
+  color: #333;
+  background-color: #eee;
+}
+
+pre {
+  border: 1px dotted gray;
+  background-color: #ececec;
+  color: #1111111;
+  padding: 0.5em;
+}
+
+code {
+  font-family: 'Inconsolata', monospace;
+}
+
+p {
+  margin-top: 1.1em;
+}
+
+h1 a, h2 a, h3 a,
+h4 a, h5 a {
+  text-decoration: none;
+  color: CornFlowerBlue;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Arvo', serif;
+  font-weight: bold;
+  color: #324a76;
+}
+
+h4, h5 {
+  font-style: italic;
+}
+
+h1.title {
+  font-size: 200%;
+  font-weight: bold;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  text-align: left;
+  border: none;
+}
+
+.header {
+  margin-top: 40px;
+}
+
+.header-section-number {
+  margin-right: 15px;
+  color: #283b5e;
+  font-weight: bold;
+}
+
+.section {
+  margin-top: 50px;
+}
+
+dt code {
+  font-weight: bold;
+}
+
+dd p {
+  margin-top: 0;
+}
+
+#footer {
+  padding-top: 1em;
+  font-size: 70%;
+  color: gray;
+  text-align: center;
+}
+
+.figure {
+  max-height: 600px;
+  margin: 80px auto;
+  width: 80%;
+  padding: 20px;
+  border: 2px;
+  border-style: solid;
+  border-color: #333333;
+  overflow-y: auto;
+  text-align: center;
+  align-content: center;
+  background-color: white;
+}
+
+.figure img {
+  margin: 0 auto;
+  width: 90%;
+}
+
+.figure .caption {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #eeeeee;
+}
+
+caption, .caption {
+  text-align: left;
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+}
+a:link    { color: #83aaf0 }  /* unvisited links */
+a:visited { color: #83aaf0 }  /* visited links   */
+a:hover   { color: #5077bd }  /* user hovers     */
+a:active  { color: #83aaf0 }  /* active links    */
+
+table {
+  margin: 0 auto;
+  width: 90%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  empty-cells: show;
+  border: 1px solid #cbcbcb;
+}
+
+table caption {
+  color: #000;
+  padding: 1em 0;
+  text-align: left;
+}
+
+table td, table th {
+  border-left: 1px solid #cbcbcb;
+  border-width: 0 0 0 1px;
+  font-size: inherit;
+  margin: 0;
+  overflow: visible;
+  padding: .5em 1em;
+}
+
+table td:first-child, table th:first-child {
+  border-left-width: 0;
+}
+
+table thead {
+  background-color: #e0e0e0;
+  color: #000;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+table td {
+  background-color: transparent;
+}
+
+table tr:nth-child(2n-1) td {
+  background-color: #f2f2f2;
+}
+
+@media screen and (max-width: 25em) {
+  body { font-size: 90%;}
+}
+
+.citation {
+  font-family: 'Inconsolata', monospace;
+  color: #0a0e17;
+}
+
+.citation a {
+  font-weight: bold;
+  color: #1e2c47;
+}
+
+.citation a:hover {
+  color: #6495ed;
+}

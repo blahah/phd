@@ -3,15 +3,22 @@ all: html pdf
 # buld thesis as an HTML document
 html:
 	pandoc --output thesis.html \
-		--include-in-header preamble.tex \
-		--standalone \
+	  --filter pandoc-fignos \
+	  --template styles/template.html \
 		--section-divs \
+		--css styles/thesis.css \
+		--toc \
+		--smart \
+		--parse-raw \
+		--katex \
+		--number-section \
+		--filter pandoc-citeproc \
 		*/text.md
 
 # build thesis as a PDF
 pdf:
 	pandoc --output thesis.pdf \
-		--include-in-header preamble.tex \
+		--template styles/template.tex \
 		*/text.md
 
 # (re)make figure images from their input data
