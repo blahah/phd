@@ -13,6 +13,7 @@ html:
 		--katex \
 		--number-section \
 		--filter pandoc-citeproc \
+		--include-before-body in_progress.md \
 		*/text.md
 
 # build thesis as a PDF
