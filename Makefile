@@ -1,4 +1,4 @@
-all: html pdf
+all: html
 
 # buld thesis as an HTML document
 html:

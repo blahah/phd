@@ -1,8 +1,45 @@
-# Improving <i>de-novo</i> transcriptomics tools
+Title
+=====
 
-## Measuring transcriptome assemblies (transrate)
+*TransRate*: reference free quality assessment of *de-novo*
+transcriptome assemblies
 
-### Background
+Authors
+=======
+
+Richard Smith-Unna^1^, Chris Boursnell^1^, Rob Patro^2^, Julian M
+Hibberd^1^, and Steven Kelly^3\*^
+
+Affiliations
+============
+
+1\) Department of Plant Sciences, University of Cambridge, Downing
+Street, CB2 3EA, UK
+
+2\) Department of Computer Science, Stony Brook University, Stony Brook,
+NY 11794-4400, USA
+
+3\) Department of Plant Sciences, University of Oxford, South Parks Road,
+OX1 3RB, UK
+
+Corresponding Author
+====================
+
+\* email: steven.kelly@plants.ox.ac.uk, phone: 0044 (0) 1865 275123
+
+Abstract
+=========
+
+***TransRate* is a tool for reference-free quality assessment of *de
+novo* transcriptome assemblies. Using only sequenced reads as the input,
+*TransRate* measures the quality of individual contigs and whole
+assemblies, enabling assembly optimization and comparison. *TransRate*
+can accurately evaluate assemblies of conserved and novel RNA molecules
+of any kind in any species. We show that it is more accurate than
+comparable methods and demonstrate its use on a variety of data.**
+
+Introduction
+============
 
 High-throughput sequencing of RNA has revolutionized our ability to
 assess the genetic basis of biological traits. For organisms that have
@@ -66,7 +103,11 @@ completeness of the whole assembly by combining the proportion of the
 read data captured with the individual contig scores. *TransRate* is
 free, open-source and available at <http://hibberdlab.com/transrate>.
 
-#### Transcriptome assembly problems
+Results
+=======
+
+Problem definition and approach
+-------------------------------
 
 The aim of *de novo* transcriptome assembly is to accurately reconstruct
 the complete set of transcripts that are represented in the read data in
@@ -87,7 +128,8 @@ integrating these contig level metrics to provide a contig score, and
 then combining the completeness of the assembly with the score of each
 contig to produce an overall assembly score (Figure 2).
 
-### Contig assessment criteria
+Contig assessment criteria
+--------------------------
 
 To calculate the *TransRate* contig score a correctly assembled contig
 is assumed to have the following four properties. 1) The identity of the
@@ -98,7 +140,7 @@ the nucleotides in the contig will accurately represent the order in the
 true transcript. 4) The contig will represent a single transcript. We
 propose that each of
 
-  ![Common errors in *de-novo* transcriptome assembly, and how they can be detected using read mapping data. <br/> <br/> *Family collapse* occurs when multiple members of a gene family are assembled into a single hybrid contig. This error can be detected by measuring the extent that the nucleotides in the contig are supported by the mapped reads. *Chimerism* occurs when two or more transcripts (that may or may not be related) are concatenated together in a single contig during assembly. This can be detected when the expression levels of the transcripts differ, leading to a change-point in the read coverage along the contig. *Unsupported insertions* can be detected as bases in a contig that are unsupported by the read evidence. *Incompleteness* can be detected when reads or fragments align off the end of the contig. *Fragmentation* is detectable when read pairs bridge two contigs. *Local misassembly* encompasses various structural errors that can occur during assembly, such as inversions, usually as a result of assembler heuristics. These are detectable when both members of a read pairs align to single contig, but in manner inconsistent with the sequencing protocol. *Redundancy* occurs when a single transcript is represented by multiple overlapping contigs in an assembly. This is detectable when reads align to multiple contigs but the assignment process assigns them all to the contig that best represents the original transcript.](figures/assembly_errors) {#fig:assembly_errors}
+  ![Figure 1 Common errors in *de-novo* transcriptome assembly, and how they can be detected using read mapping data. <br/> <br/> *Family collapse* occurs when multiple members of a gene family are assembled into a single hybrid contig. This error can be detected by measuring the extent that the nucleotides in the contig are supported by the mapped reads. *Chimerism* occurs when two or more transcripts (that may or may not be related) are concatenated together in a single contig during assembly. This can be detected when the expression levels of the transcripts differ, leading to a change-point in the read coverage along the contig. *Unsupported insertions* can be detected as bases in a contig that are unsupported by the read evidence. *Incompleteness* can be detected when reads or fragments align off the end of the contig. *Fragmentation* is detectable when read pairs bridge two contigs. *Local misassembly* encompasses various structural errors that can occur during assembly, such as inversions, usually as a result of assembler heuristics. These are detectable when both members of a read pairs align to single contig, but in manner inconsistent with the sequencing protocol. *Redundancy* occurs when a single transcript is represented by multiple overlapping contigs in an assembly. This is detectable when reads align to multiple contigs but the assignment process assigns them all to the contig that best represents the original transcript.](figures/assembly_errors) {#fig:assembly_errors}
 
 these four statements can approximated through analysis of the reads
 that map to the assembled contigs.
@@ -131,9 +173,28 @@ and Trinity for the same species. This reveals that the contigs
 generated using SOAPdenovo-Trans on this rice data contained fewer
 regions that had zero coverage after read mapping.
 
-![The *TransRate* workflow. (1) *TransRate* takes as input one or more *de novo* transcriptome assemblies and the paired-end reads used to generate them. (2) The reads are aligned to the contigs. (3) Multi-mapping reads are assigned to contigs based on the posterior probability that each contig was the true origin. (4) The alignments are evaluated using four independent score components. (5) The four score components are integrated to generate the *TransRate* contig score. (6) The *TransRate* assembly score is calculated from analysis of all contig scores](figures/transrate_workflow.png) {#fig:transrate_workflow}
+  ![The *TransRate* workflow. (1) *TransRate* takes as input one or more *de novo* transcriptome assemblies and the paired-end reads used to generate them. (2) The reads are aligned to the contigs. (3) Multi-mapping reads are assigned to contigs based on the posterior probability that each contig was the true origin. (4) The alignments are evaluated using four independent score components. (5) The four score components are integrated to generate the *TransRate* contig score. (6) The *TransRate* assembly score is
+  calculated from analysis of all contig scores](figures/transrate_workflow.png) {#fig:transrate_workflow}
 
-![Distribution and interrelationship of contig score components. (A) Distribution of contig score components in ten different assemblies spanning four species and three different assemblers. $s\left( C_{\text{nuc}} \right)\ $is the fraction of nucleotides in a contig whose sequence identity agrees with the aligned reads. $s\left( C_{\text{cov}} \right)$ is the fraction of nucleotides in a contig that have one or more mapped reads. $s\left( C_{\text{ord}} \right)$ is the fraction of reads that map to the contig in the correct orientation. $s(C_{\text{seg}})$ is the probability that the read coverage along the length of the contig is best explained by a single Dirichlet distribution, as opposed to two or more distributions. (B) The Spearman’s rank correlation coefficient between the contig score components, averaged across all species and assemblers.](figures/transrate_contig_score_component_distributions.png) {#fig:transrate_contig_score_components}
+  ![](media/image3.png)
+
+  **Figure 3.** Distribution and interrelationship of contig score components.
+
+  \(A) Distribution of contig score components in ten different assemblies
+  spanning four species and three different assemblers.
+  $s\left( C_{\text{nuc}} \right)\ $is the fraction of nucleotides in a
+  contig whose sequence identity agrees with the aligned reads.
+  $s\left( C_{\text{cov}} \right)$ is the fraction of nucleotides in a
+  contig that have one or more mapped reads.
+  $s\left( C_{\text{ord}} \right)$ is the fraction of reads that map to
+  the contig in the correct orientation. $s(C_{\text{seg}})$ is the
+  probability that the read coverage along the length of the contig is
+  best explained by a single Dirichlet distribution, as opposed to two or
+  more distributions. (B) The Spearman’s rank correlation coefficient
+  between the contig score components, averaged across all species and
+  assemblers.
+  ------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------
 
 Visual inspection of the global behavior of the contig level metrics
 suggested that the four scores could be classified into two groups based
@@ -154,7 +215,8 @@ contigs according to each score component was consistent with the
 individual score components accurately capturing their target properties
 (Supplementary file 2).
 
-### Evaluation of the *TransRate* contig score
+Evaluation of the *TransRate* contig score
+------------------------------------------
 
 As the contig-level metrics provided independent evaluation of assembled
 contigs, we sought to determine if the product of these metrics was
@@ -183,7 +245,14 @@ were used here to enable unbiased comparison of *TransRate* and
 RSEM-eval scores, as their score distributions differ in type, location,
 scale and shape.
 
-![*TransRate* contig score is related to assembly accuracy**. Contigs from assemblies of simulated reads from four species (rice, mouse, yeast, and human) were evaluated using *TransRate* and RSEM-eval. Reciprocal best-BLAST against the true set of transcripts was used to determine the F-score, or reference-based accuracy, of the assembled contig. Each point is a contig in an assembly, with all four assemblies on the same plot. A) Comparison between *TransRate* contig score and contig F-score. B) Comparison between RSEM-eval contig impact score and contig F-score, with contig impact scores below 0 set to the smallest positive value in the data to enable plotting.](figures/transrate_contig_score_accuracy.png)
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  ![](media/image4.png)
+
+  **Figure 4. *TransRate* contig score is related to assembly accuracy**.
+
+  Contigs from assemblies of simulated reads from four species (rice, mouse, yeast, and human) were evaluated using *TransRate* and RSEM-eval. Reciprocal best-BLAST against the true set of transcripts was used to determine the F-score, or reference-based accuracy, of the assembled contig. Each point is a contig in an assembly, with all four assemblies on the same plot. A) Comparison between *TransRate* contig score and contig F-score. B) Comparison between RSEM-eval contig impact score and contig F-score, with contig impact scores below 0 set to the smallest positive value in the data to enable plotting.
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Analysis of the interrelationship between contig scores and contig
 accuracy revealed that both assessment methods exhibited minimum value
@@ -200,7 +269,8 @@ assembly. As these contigs are redundant and they would be quantified as
 both *TransRate* and RSEM-eval are justified in the assignment of
 minimum value scores to these contigs.
 
-### Application of *TransRate* for relative evaluation of *de novo* assemblies from the same read data
+Application of *TransRate* for relative evaluation of *de novo* assemblies from the same read data
+--------------------------------------------------------------------------------------------------
 
 Given that the *TransRate* contig score is strongly related to contig
 accuracy, we sought to develop an assembly-level score that summarised
@@ -234,9 +304,24 @@ be 1. Errors in the sequencing or assembly process that cause reads to
 be omitted form the assembly or reads to disagree with the assembled
 contigs will cause the assembly score to tend towards 0.
 
-![**Calculation of *TransRate* assembly scores.** A) Distribution of *TransRate* contig scores for the 10 representative assemblies from real data. B) Geometric mean of *TransRate* contig scores for all assemblies. C) Proportion of reads that map to each assembly. D) Final *TransRate* assembly scores for the 10 representative assemblies. E) The proportion of reference transcripts that are best assembled by individual assembly methods. F) The number of reference transcripts (identified by reciprocal best BLAST) that are assembled by each assembler.](figures/assembly_score_plots.png)
+  --------------------------------------------------------------------------
+  ![](media/image5.png)
 
-### Further comparison of *de novo* assemblies using BLAST and *TransRate*
+  **Figure 5.** **Calculation of *TransRate* assembly scores.**
+
+  A\) Distribution of *TransRate* contig scores for the 10 representative
+  assemblies from real data. B) Geometric mean of *TransRate* contig
+  scores for all assemblies. C) Proportion of reads that map to each
+  assembly. D) Final *TransRate* assembly scores for the 10 representative
+  assemblies. E) The proportion of reference transcripts that are best
+  assembled by individual assembly methods. F) The number of reference
+  transcripts (identified by reciprocal best BLAST) that are assembled by
+  each assembler.
+  --------------------------------------------------------------------------
+  --------------------------------------------------------------------------
+
+Further comparison of *de novo* assemblies using BLAST and *TransRate*
+----------------------------------------------------------------------
 
 To demonstrate additional ways in which *TransRate* can be combined with
 BLAST based assessment of *de novo* transcriptome assemblies, the *de
@@ -256,7 +341,8 @@ the idea that combining contigs from multiple assembly methods is an
 effective way to increase the completeness of a de novo assembled
 transcriptome.
 
-### Filtration of contigs using *TransRate* contig scores
+Filtration of contigs using *TransRate* contig scores
+-----------------------------------------------------
 
 As shown in Figure 4A, 4B & 5A, many contigs within a given assembly can
 achieve low or minimum value scores and thus users may desire to remove
@@ -272,9 +358,17 @@ consistent with the problem definition and overall aim of *TransRate*
 transcriptome using only the input reads) as it automatically selects
 the subset of contigs that maximises both accuracy and completeness.
 
-![Application of *TransRate* to 155 published assemblies from the NCBI Transcriptome Shotgun Archive. <br> <br> 155 assemblies from the Transcriptome Shotgun Archive were analysed using transrate. The quality of the reads used to generate the assemblies were also analysed using FastQC. A) Cumulative distribution of *TransRate* raw and optimsed assembly scores for each of the 155 assemblies. B) Comparison between raw and optimised assembly score. C) Distribution of *TransRate* optimised assembly scores partitioned by taxonomic group. C) Distribution of *TransRate* optimised assembly scores partitioned by assembly method. (E-J) *TransRate* optimsied assembly scores compared to various summary statistics of the input reads: E) read length, F) read GC%, G) mean read per-base Phred score, H) percent of reads that were PCR duplicates, I) number of read pairs, and J) read bases per assembled base.](figures/transrate_on_tsa.png)
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  ![](media/image6.png)Figure 6. Application of *TransRate* to 155 published assemblies from the NCBI Transcriptome Shotgun Archive.
+  ----------------------------------------------------------------------------------------------------------------------------------
 
-### Comparative analysis of 155 published assemblies provides a reference for calibration and relative assessment of assembly quality
+  155 assemblies from the Transcriptome Shotgun Archive were analysed using transrate. The quality of the reads used to generate the assemblies were also analysed using FastQC. A) Cumulative distribution of *TransRate* raw and optimsed assembly scores for each of the 155 assemblies. B) Comparison between raw and optimised assembly score. C) Distribution of *TransRate* optimised assembly scores partitioned by taxonomic group. C) Distribution of *TransRate* optimised assembly scores partitioned by assembly method. (E-J) *TransRate* optimsied assembly scores compared to various summary statistics of the input reads: E) read length, F) read GC%, G) mean read per-base Phred score, H) percent of reads that were PCR duplicates, I) number of read pairs, and J) read bases per assembled base.
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Comparative analysis of 155 published assemblies provides a reference for calibration and relative assessment of assembly quality
+---------------------------------------------------------------------------------------------------------------------------------
 
 To provide a reference distribution of *TransRate* assembly scores that
 end-users can use to assess the relative merit of their own assemblies,
@@ -345,7 +439,8 @@ explain 43% of the variance in *de novo* assembly quality. Thus, the
 quality of the input data is more important in determining the quality
 of a *de novo* assembly than the choice of assembly method that is used.
 
-### Discussion
+Discussion
+==========
 
 Here we present *TransRate* a novel method for reference free assessment
 and filtering of *de novo* assembled transcriptomes. Our method is
@@ -387,9 +482,11 @@ transcriptome assembly, explaining more of the variance in quality
 between assemblies than quantity of read data or assembly method that is
 used.
 
-### Materials and Methods
+Materials and Methods
+=====================
 
-#### Algorithm overview
+Algorithm overview
+------------------
 
 *TransRate* is a reference-free qualitative assessment tool for the
 analysis of *de novo* transcriptome assemblies. *TransRate* requires one
@@ -400,7 +497,8 @@ of processed read alignments. *TransRate* classifies contigs into those
 that are well assembled and those that are poorly assembled, by learning
 a score cutoff from the data that maximises the overall assembly score.
 
-##### *Implementation*
+*Implementation*
+----------------
 
 *TransRate* is written in Ruby and C++, and makes use of the BioRuby
 (Goto et al., 2010) and Bamtools (Barnett et al., 2011) libraries. The
@@ -410,7 +508,8 @@ documentation are available at http://hibberdlab.com/transrate. The
 software is operated via a command line interface and can be used on OSX
 and Linux. *TransRate* can also be used programmatically as a Ruby gem.
 
-##### *Read alignment*
+*Read alignment*
+----------------
 
 Reads are aligned to a given assembly using SNAP v1.0.0 (Zaharia et al.,
 2011). Alignments are reported up to a maximum edit distance of 30. Up
@@ -423,7 +522,8 @@ v0.4 (Patro et al., 2014) so that multi-mapping reads are assigned to a
 single contig based on the posterior probability that the reads come
 from that contig.
 
-##### *TransRate* contig scores
+*TransRate* contig scores
+-------------------------
 
 *TransRate* outputs scores for every contig. Here, an assembly consists
 of a set of contigs $C$ derived from a set of reads $\hat{R}$. Reads are
@@ -492,7 +592,8 @@ The *TransRate* contig score is the product of the scores for each of
 these properties using the aligned reads as evidence. These four
 properties is evaluated as follows.
 
-##### Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{nuc}}}\mathbf{)}$
+Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{nuc}}}\mathbf{)}$
+-----------------------------------------------------------------------
 
 The alignment edit distance is used to quantify the extent to which the
 contig sequence is correct. The alignment edit distance is the number of
@@ -508,13 +609,15 @@ evaluated as $1 - \frac{e_{r_{\text{ij}}}}{\hat{e}}$ for each
 $r_{i} \in \varrho k$, and the mean of all support values is used to
 calculate $s(C_{\text{nuc}})$**.**
 
-##### Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{cov}}}\mathbf{)}$
+Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{cov}}}\mathbf{)}$
+-----------------------------------------------------------------------
 
 This score is evaluated as the fraction of nucleotides in the contig
 that receive at least one mapped read irrespective of the agreement
 between the read and the contig.
 
-##### Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{ord}}}\mathbf{)}$
+Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{ord}}}\mathbf{)}$
+-----------------------------------------------------------------------
 
 The pairing information of the mapped reads is used to evaluate this
 score. To determine the parameters of the read library preparation a
@@ -532,7 +635,8 @@ consistent with the mean and standard deviation of the inferred fragment
 size. $s(C_{\text{ord}})$ is then evaluated as the proportion of all
 mapped read pairs that are correct.
 
-##### Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{seg}}}\mathbf{)}$
+Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{seg}}}\mathbf{)}$
+-----------------------------------------------------------------------
 
 The per-nucleotide read coverage data is used to evaluate this score. To
 evaluate the probability that the contig originates from a single
@@ -556,7 +660,8 @@ read depth rounded to the nearest integer. As the probability will be a
 value between 0 and 1, this probability is used directly as
 $s(C_{\text{seg}})$.
 
-#### TransRate assembly score
+TransRate assembly score
+------------------------
 
 The aim of the *TransRate* assembly score is to provide insight into the
 accuracy and completeness of any given assembly. Thus the assembly score
@@ -580,7 +685,8 @@ Where
 
 $$s\left( C \right) = \ s(C_{\text{nuc}}\ )s(C_{\text{cov}}\ )s(C_{\text{ord}})s(C_{\text{seg}})$$
 
-#### Analysis of assemblies generated from real reads
+Analysis of assemblies generated from real reads
+------------------------------------------------
 
 To demonstrate the utility *TransRate* contig and assembly scores using
 real data, *TransRate* was applied to publicly available benchmark
@@ -596,7 +702,8 @@ and each of the species has a completed annotated reference genome
 available. In all cases, *TransRate* was run with the published reads
 and the published assembly as input.
 
-#### Independence of score components
+Independence of score components
+--------------------------------
 
 Correlation between the contig score components was measured for the
 assemblies from real data. To prevent larger assemblies from biasing the
@@ -606,7 +713,8 @@ using R version 3.1.1 (R Core Team, 2014). The correlation between any
 two score components was taken as the mean of the correlation across all
 datasets.
 
-#### Identification of reconstructed reference transcripts
+Identification of reconstructed reference transcripts
+-----------------------------------------------------
 
 The full set of coding and non-coding transcripts for each species were
 downloaded from Ensembl Genomes version 25
@@ -616,7 +724,8 @@ corresponding species using bidirectional blastn local alignment with an
 e-value cutoff of 10^-5^ (BLAST+ version 2.2.29 (Camacho et al., 2009)).
 Only reciprocal best hits were retained for further analysis.
 
-#### Assembly from simulated read data
+Assembly from simulated read data
+---------------------------------
 
 For each species, a total of 10 million mRNA molecules were simulated
 from the full set of annotated mRNAs from the Ensembl reference with
@@ -628,7 +737,8 @@ million pairs of 100bp reads were simulated using the default error
 profile included in flux-simulator. An assembly was generated from these
 simulated reads using SOAPdenovo-Trans with default parameters.
 
-#### Calculation of contig accuracy
+Calculation of contig accuracy
+------------------------------
 
 Accuracy was calculated by comparing contigs assembled from simulated
 data to the set of transcripts from which the read data were simulated.
@@ -648,7 +758,8 @@ same contigs were also subject to analysis using RSEM-eval and the
 relationship between contig impact score and contig F-score analyzed
 using the same method.
 
-#### Constructing a benchmark dataset of *TransRate* scores
+Constructing a benchmark dataset of *TransRate* scores
+------------------------------------------------------
 
 A survey of the range of assembly scores for published *de novo*
 transcriptome assemblies was conducted by analyzing a sub-set of
@@ -663,13 +774,15 @@ these test datasets, the assembly and reads were downloaded. *TransRate*
 was run on all assemblies and FastQC version 2.3 (Andrews, 2010) was
 used to evaluate the quality of the read datasets.
 
-### Analysis implementation
+Analysis implementation
+-----------------------
 
 The experimental and analysis code, implemented in Ruby and R, are
 available under an MIT license at
 https://github.com/Blahah/transrate-paper.
 
-### Acknowledgements
+Acknowledgements
+================
 
 The authors thank the *TransRate* user community for testing, bug
 reports and feedback. In particular, we thank Matt MacManes for
@@ -683,7 +796,8 @@ the Sustainable Crop Production Research for International Development
 programme, a joint initiative with the Department of Biotechnology of
 the Government of India's Ministry of Science and Technology.
 
-#### References
+References
+==========
 
 Andrews, S., 2010. FastQC: a quality control tool for high throughput
 sequence data \[WWW Document\]. URL
@@ -759,7 +873,8 @@ Zaharia, M., Bolosky, W.J., Curtis, K., Fox, A., Patterson, D., Shenker,
 S., Stoica, I., Karp, R.M., Sittler, T., 2011. Faster and More Accurate
 Sequence Alignment with SNAP. ArXiv11115572 Cs Q-Bio.
 
-#### Supplemental file legends
+Supplemental file legends
+=========================
 
 **Supplemental file 1.** CSV. Spearman’s rank correlation between the
 contig F-score, the *TransRate* contig score, and the RSEM-eval contig

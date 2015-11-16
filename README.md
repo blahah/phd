@@ -2,6 +2,8 @@
 
 This is my PhD thesis. It's a work in progress.
 
+You can see the HTML version of something like the current state here: http://blahah.net/phd/thesis.html
+
 Working title:
 
 **A phylotranscriptomic reasoning framework for C4 photosynthesis research.**
