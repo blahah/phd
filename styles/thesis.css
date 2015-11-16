@@ -9,8 +9,7 @@
 
 #header {
   margin: 0 auto;
-  padding: 50px;
-  width: 80%;
+  padding: 50px 0;
   font-size: 120%;
   color: #324a76;
 }
@@ -47,6 +46,11 @@ body {
   line-height: 1.5;
   color: #333;
   background-color: #eee;
+}
+
+#container {
+  margin: 0 auto;
+  max-width: 90%;
 }
 
 pre {
@@ -119,7 +123,7 @@ dd p {
 }
 
 .figure {
-  max-height: 600px;
+  height: auto;
   margin: 80px auto;
   width: 80%;
   padding: 20px;
