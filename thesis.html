@@ -1,0 +1,642 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Richard D. Smith-Unna" />
+  <title>A reasoning framework for C4 photosynthesis research based on high-throughput analysis</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/thesis.css" type="text/css" />
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.1.0/katex.min.js"></script><link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.1.0/katex.min.css" /><script type="text/javascript">window.onload = function(){var mathElements = document.getElementsByClassName("math");
+  for (var i=0; i < mathElements.length; i++)
+  {
+   var texText = mathElements[i].firstChild
+   katex.render(texText.data, mathElements[i])
+  }}
+  </script>
+</head>
+<body>
+<div id="header">
+<h1 class="title">A reasoning framework for C4 photosynthesis research based on high-throughput analysis</h1>
+<h2 class="author">Richard D. Smith-Unna</h2>
+</div>
+<div id="TOC">
+<h2 id="toctitle">Table of Contents</h2>
+<ul>
+<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a><ul>
+<li><a href="#c4-photosynthesis"><span class="toc-section-number">1.1</span> C<sub>4</sub> photosynthesis</a><ul>
+<li><a href="#c4-solves-an-ancient-problem-that-affects-almost-all-life-on-earth"><span class="toc-section-number">1.1.1</span> C<sub>4</sub> solves an ancient problem that affects almost all life on earth</a></li>
+<li><a href="#the-profligate-evolution-of-c4-photosynthesis"><span class="toc-section-number">1.1.2</span> The profligate evolution of C<sub>4</sub> photosynthesis</a></li>
+</ul></li>
+<li><a href="#the-humanitarian-case-for-crop-engineering-interventions"><span class="toc-section-number">1.2</span> The humanitarian case for crop engineering interventions</a></li>
+<li><a href="#the-c4-rice-project"><span class="toc-section-number">1.3</span> The C<sub>4</sub> rice project</a></li>
+<li><a href="#the-developmental-dynamics-of-the-c4-leaf"><span class="toc-section-number">1.4</span> The developmental dynamics of the C<sub>4</sub> leaf</a></li>
+<li><a href="#regulation-in-cis-and-trans"><span class="toc-section-number">1.5</span> Regulation in <em>cis</em> and <em>trans</em></a></li>
+<li><a href="#the-importance-of-wetland-c4-monocots"><span class="toc-section-number">1.6</span> The importance of wetland C<sub>4</sub> monocots</a></li>
+<li><a href="#potential-pitfalls-of-c4-in-the-wet"><span class="toc-section-number">1.7</span> Potential pitfalls of C<sub>4</sub> in the wet</a></li>
+<li><a href="#echinochloa-glabrescens-as-a-model-for-wet-c4"><span class="toc-section-number">1.8</span> <em>Echinochloa glabrescens</em> as a model for wet C<sub>4</sub></a></li>
+<li><a href="#de-novo-transcriptomics"><span class="toc-section-number">1.9</span> <i>de-novo</i> transcriptomics</a></li>
+</ul></li>
+<li><a href="#improving-de-novo-transcriptomics-tools"><span class="toc-section-number">2</span> Improving <i>de-novo</i> transcriptomics tools</a><ul>
+<li><a href="#measuring-transcriptome-assemblies-transrate"><span class="toc-section-number">2.1</span> Measuring transcriptome assemblies (transrate)</a></li>
+<li><a href="#in-pursuit-of-the-optimal-transcriptome-assembly"><span class="toc-section-number">2.2</span> In pursuit of the optimal transcriptome assembly</a><ul>
+<li><a href="#background"><span class="toc-section-number">2.2.1</span> Background</a></li>
+<li><a href="#assembly-quality-varies-with-algorithm-and-parameterisation"><span class="toc-section-number">2.2.2</span> Assembly quality varies with algorithm and parameterisation</a></li>
+<li><a href="#assembly-is-computationally-expensive-making-exhaustive-optimisation-impossible"><span class="toc-section-number">2.2.3</span> Assembly is computationally expensive, making exhaustive optimisation impossible</a></li>
+<li><a href="#read-sampling-gives-a-speedup-while-preserving-quality-distribution"><span class="toc-section-number">2.2.4</span> Read sampling gives a speedup while preserving quality distribution</a></li>
+<li><a href="#finding-the-optimal-parameters-without-exhaustive-searching"><span class="toc-section-number">2.2.5</span> Finding the optimal parameters without exhaustive searching</a></li>
+<li><a href="#assemblotron"><span class="toc-section-number">2.2.6</span>  Assemblotron</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#high-quality-transcriptomic-resources-for-c4-research"><span class="toc-section-number">3</span> High-quality transcriptomic resources for C<sub>4</sub> research</a></li>
+<li><a href="#reasoning-about-c4-with-a-phylogenetically-structured-model"><span class="toc-section-number">4</span> Reasoning about C<sub>4</sub> with a phylogenetically structured model</a></li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<!-- TODO: add figure number references -->
+<!-- TODO: add section label references -->
+<!-- TODO: update with new findings since June 2013 -->
+<!-- TODO: photosynthesis summary, importance. -->
+<p>C<sub>4</sub> photosynthesis (hereafter C<sub>4</sub>) has evolved independently at least 66 times to solve the problem of the wasteful oxygenation reaction catalysed by RuBisCO <span class="citation">(R. F. Sage and Zhu <a href="#ref-sage2011">2011</a>)</span>. Despite accounting for only a small fraction of all plant species, C<sub>4</sub> plants contribute disproportionately to terrestrial carbon fixation <span class="citation">(Lloyd and Farquhar <a href="#ref-lloyd1994">1994</a>)</span>, dominate many tropical and subtropical habitats <span class="citation">(Cerling et al. <a href="#ref-cerling1997">1997</a>; Osborne and Beerling <a href="#ref-osborne2006">2006</a>)</span>, and have become even more widely successful through their overrepresentation in human agriculture <span class="citation">(R. Harold Brown <a href="#ref-brown1999">1999</a>)</span>.</p>
+<p>In the first part of this introductory chapter, C<sub>4</sub> photosynthesis is placed in its physiological and evolutionary context. The humanitarian importance of understanding C<sub>4</sub> is explained, after which the current knowledge of the development and control of C<sub>4</sub> is reviewed and the further discoveries necessary to bring this knowledge to application are outlined.</p>
+<p>The second part of the chapter explains the theoretical underpinnings and practical process of <i>de-novo</i> transcriptomics, an experimental approach being fruitfully harnessed in the pursuit of understanding C<sub>4</sub>. The principles and merits of this approach are discussed, before the potential insights and limitations are summarised.</p>
+<p>The third and final part of this chapter reviews the various ways in which transcriptomics has been harnessed in C<sub>4</sub> research. The insights that have been gleaned are discussed, and the potential for further inference from existing data is highlighted. A roadmap for tool and resource development is proposed that would allow considerably more informative inference from existing data, and ultimately underpin progress towards the goal of understanding and engineering C<sub>4</sub>.</p>
+<div id="c4-photosynthesis" class="section level2">
+<h2><span class="header-section-number">1.1</span> C<sub>4</sub> photosynthesis</h2>
+<div id="c4-solves-an-ancient-problem-that-affects-almost-all-life-on-earth" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> C<sub>4</sub> solves an ancient problem that affects almost all life on earth</h3>
+<p>The light-independent reactions of photosynthesis are highly conserved <span class="citation">Kawashima and Wildman (<a href="#ref-kawashima1970">1970</a>)</span> and involve CO<sub>2</sub> being fixed with ribulose-1,5-bisphosphate (RuBP) by the enzyme ribulose-1,5-bisphosphate carboxylase oxygenase (RuBisCO) to form two molecules of 3-phosphoglycerate (G3P). One of these G3P molecules re-enters the Calvin Benson cycle while the other is incorporated into a sucrose molecule (figure ). Sugars produced in this way are by far the largest primary energy source in the biosphere <span class="citation">(Fuchs <a href="#ref-fuchs2011">2011</a>)</span>; RuBisCO is thus the major conduit through which life on Earth is energised.</p>
+<div class="figure">
+<img src="figures/photorespiration.png" alt="Photorespiration and the Calvin Benson cycle. Grey circles represent enzymes; grey lines indicate reactions of photorespiration that produce wasteful or harmful byproducts. Adapted from Peterhansel et al. (2010)" />
+<p class="caption">Photorespiration and the Calvin Benson cycle. Grey circles represent enzymes; grey lines indicate reactions of photorespiration that produce wasteful or harmful byproducts. Adapted from <span class="citation">Peterhansel et al. (<a href="#ref-peterhansel2010">2010</a>)</span></p>
+</div>
+<p>RuBisCO can also catalyse the reaction of molecular oxygen () with RuBP, forming one G3P and one 2-phosphoglycolate (2PG). While RuBisCO has a specificity for CO<sub>2</sub> over of ~80<span class="math inline">\times</span> <span class="citation">(Jordan and Ogren <a href="#ref-jordan1981">1981</a>)</span> oxygen is ~530<span class="math inline">\times</span> more adundant in the atmosphere, so that approximately a quarter of RuBisCO-catalysed reactions are oygenations <span class="citation">(Ehleringer et al. <a href="#ref-ehleringer1991">1991</a>)</span>. This oxygenation reaction is wasteful for several reasons. 2PG is an inhibitor of several enzymes linked to the Calvin cycle <span class="citation">(Anderson <a href="#ref-anderson1971">1971</a>; G. Kelly and Latzko <a href="#ref-kelly1976">1976</a>)</span> and must therefore be de-phosphorylated to produce glycolate. Glycolate decomposes rapidly to glyoxylate which inhibits activation of RuBisCO <span class="citation">(Chastain and Ogren <a href="#ref-chastain1989">1989</a>; Campbell and Ogren <a href="#ref-campbell1990">1990</a>)</span>. To avoid metabolic retardation, the the conversion of glyoxylate to the safe end-product glycine is required, which releases CO<sub>2</sub> (thus revoking the initial carbon fixation) and NH<sub>3</sub> (which is toxic). In order to recover a sugar product, glycine is converted in multiple steps to a single G3P, resulting in a total net cost of ~12.25 ATP for a single round of the entire photorespiratory pathway <span class="citation">(Peterhansel et al. <a href="#ref-peterhansel2010">2010</a>)</span>, and a net loss of CO<sub>2</sub>. As a result of this inefficiency, C<sub>4</sub> plants must produce abundant RuBisCO to achieve necessary rates of carbon fixation, leading to RuBisCO being probably the most abundant protein on earth <span class="citation">(Ellis <a href="#ref-ellis1979">1979</a>; Raven <a href="#ref-raven2013">2013</a>)</span>, and a considerable burden on net photosynthesis in most plants <span class="citation">(Sharkey <a href="#ref-sharkey1988">1988</a>)</span>.</p>
+<p>By fixing CO<sub>2</sub> through  and a succession of 4-carbon molecules <span class="citation">(M. D. Hatch and Slack <a href="#ref-hatch1966">1966</a>)</span> in mesophyll (M) cells, and shuttling the resultant four-carbon molecule into bundle sheath (BS) cells with high RuBisCO content where CO<sub>2</sub> is released, C<sub>4</sub> plants are able to provide a CO<sub>2</sub>-rich environment for RuBisCO <span class="citation">(R. T. Furbank and Hatch <a href="#ref-furbank1987">1987</a>)</span>; see figure ). This reduces the oxygenase activity of RuBisCO and avoids wasteful photorespiration, resulting in greater total energy capture from photosynthesis.</p>
+<p>!(C<sub>4</sub> photosynthesis compartmentalises the light-independent reactions of photosynthesis. CO<sub>2</sub> is fixed initially in mesophyll cells, resulting in a 4-carbon acid that diffuses into the bundle sheath cells, where RuBisCO is concentrated. The 4-carbon acid is decarboxylated in the vicinity of RuBisCO, recreating the high-CO<sub>2</sub> environment in which the enzyme evolved. This greatly reduces the rate of photooxidation, in turn reducing the need for photorespiration and improving overall efficiency of carbon capture.)[includes/background/c4/c4biochem.png]</p>
+<p>Because less RuBisCO is required in C<sub>4</sub> plants, they tend to have much higher nitrogen use efficiency <span class="citation">(R. H. Brown <a href="#ref-brown1978">1978</a>)</span>, and due to the CO<sub>2</sub> concentration mechanism a lower stomatal conductance is possible, resulting in greater water use efficiency <span class="citation">(Björkman et al. <a href="#ref-bjorkman1971">1971</a>; R. Harold Brown <a href="#ref-brown1999">1999</a>)</span>. These factors affect radiation use efficiency (RUE), and therefore total potential yield, which is on average around 50% greater in C<sub>4</sub> than C<sub>3</sub> plants <span class="citation">(Monteith <a href="#ref-monteith1978">1978</a>; P. Mitchell and Sheehy <a href="#ref-sheehy2008">2008</a>)</span>.</p>
+<p>C<sub>4</sub> photosynthesis is typically associated with a suite of metabolic, anatomical and ultrastructural specialisations known as Kranz anatomy <span class="citation">(Dengler and Nelson <a href="#ref-dengler1999">1999</a>)</span>. These adaptations include: metabolic compartmentalisation, such that certain genes are expressed preferentially in either BS or M cells; increased density of BS cells within the leaf, such that each BS cell is usually surrounded by a single layer of M cells, with a concomitant increased density of leaf veins; presence of a suberin layer in BS cell walls to prevent CO<sub>2</sub> leakage (in NADP types); increased density of plasmodesmata linking BS and M cells to allow increased metabolite transport; and BS chloroplasts that are partitioned centrifugally (in most examples of NADP-ME subtype) or centripetally (in most examples of NAD-ME subtype).</p>
+<!-- % TODO: go into more detail about C4 biochemistry here and how it was discovered -->
+</div>
+<div id="the-profligate-evolution-of-c4-photosynthesis" class="section level3">
+<h3><span class="header-section-number">1.1.2</span> The profligate evolution of C<sub>4</sub> photosynthesis</h3>
+<p>Oxygenic photosynthesis using RuBisCO probably arose 2.9 billion years ago (Ga) and was abundant by 2.6Ga <span class="citation">(E. G. Nisbet et al. <a href="#ref-nisbet2007">2007</a>)</span>. This early atmosphere was rich in CO<sub>2</sub> and low in relative to modern levels <span class="citation">(Bekker et al. <a href="#ref-bekker2004">2004</a>; H. D. Holland <a href="#ref-holland2006">2006</a>)</span>, so RuBisCO’s oxygenation reaction was not a constraint for early photosynthetic organisms. Over the next two billion years, first cyanobacteria, then algae and land plants, gradually oxygenated the atmosphere from ~0.04atm 2.4Ga to ~0.2atm 0.5Ga, close to modern levels <span class="citation">(H. D. Holland <a href="#ref-holland2006">2006</a>)</span>. At the same time, CO<sub>2</sub> levels were depleted from ~2atm 4.5Ga to ~0.001atm 0.5Ga <span class="citation">(Kasting <a href="#ref-kasting1987">1987</a>)</span> due to cyanobacterial and algal photosyntheis. Atmospheric CO<sub>2</sub> then underwent two periods of sudden decline in the last 0.5Ga: firstly ~300Ma <span class="citation">(Berner <a href="#ref-berner1998">1998</a>)</span> due to the rise of land plants, and secondly ~30Ma in the Oligocene epoch <span class="citation">(Pagani et al. <a href="#ref-pagani2005">2005</a>; Beerling and Royer <a href="#ref-beerling2011">2011</a>)</span>.</p>
+<!-- repeated evolution -->
+<p>C<sub>4</sub> photosynthesis arose for the first time during, and probably in response to, the Oligocene CO<sub>2</sub> minimum <span class="citation">(Vicentini et al. <a href="#ref-vicentini2008">2008</a>; Christin et al. <a href="#ref-christin2008">2008</a>)</span>, and did so multiple times independently in phylogenetically diverse lineages. The earliest origins occured in the Poales and Caryophyllales <span class="citation">(Christin et al. <a href="#ref-christin2011">2011</a>)</span>, which are now the most diverse C<sub>4</sub> clades, each containing at least 23 putative independent C<sub>4</sub> origins <span class="citation">(R. F. Sage and Zhu <a href="#ref-sage2011">2011</a>)</span>. In total, C<sub>4</sub> is found in at least 66 independent plant lineages whose common ancestors at C<sub>3</sub> and are thus thought to represent separate evolutionary origins <span class="citation">(Grass Phylogeny Working Group II <a href="#ref-grassphylogenyworkinggroupii2012">2012</a>; R. F. Sage, Christin, and Edwards <a href="#ref-sage2011-b">2011</a>)</span>.</p>
+<!-- C4 uses components which already existed in C3 ancestors. They performed different functions, and have been co-opted -->
+<p>The repeated evolution of C<sub>4</sub> may have been facilitated by the fact that the key components of the C<sub>4</sub> apparatus already existed in C<sub>3</sub> ancestors. The structures that became specialised for compartmentalisation of metabolism (BS and M cells), inter-cellular flux of metabolites (plasmodesmata) and CO<sub>2</sub> concentration maintenance (BS cell walls) were present ancestrally and needed only slight modification during development to serve their C<sub>4</sub> purpose <span class="citation">(Christin and Osborne <a href="#ref-christin2013">2013</a>)</span>. Similarly, no new enzymes needed to evolve for the pathway to operate; all were co-opted through duplication with neofunctionalisation from various roles in the ancestral C<sub>3</sub> species, particularly from general housekeeping roles <span class="citation">Monson (<a href="#ref-monson2003">2003</a>)</span>, <span class="citation">(Aubry, Brown, and Hibberd <a href="#ref-aubry2011">2011</a>)</span>. The key evolutionary innovations in C<sub>4</sub> involved modification of the expression patterns of the co-opted enzymes <span class="citation">(Hibberd and Covshoff <a href="#ref-hibberd2010">2010</a>; Williams <a href="#ref-williams2012">2012</a>)</span>, possibly driven by parallel evolution of regulatory transcription factors (Aubry et al., in prep.).</p>
+<!-- TODO: cite Aubry et al now published -->
+<!-- some aspects of C4 development appear to be preadaptations -->
+</div>
+</div>
+<div id="the-humanitarian-case-for-crop-engineering-interventions" class="section level2">
+<h2><span class="header-section-number">1.2</span> The humanitarian case for crop engineering interventions</h2>
+<p>Rice is the staple food for more people than any other crop, providing approximately 8% of the total calories consumed by humans globally (figure A) and around 20% of protein. The proportional contribution of rice to the human diet has been steadily increasing over the last 50 years (figure A).</p>
+<p>The global population passed the 7 billion mark in 2012 and continues to rise, projected to reach 9.3 billion by 2050 <span class="citation">(UNDESA <a href="#ref-undesa2010">2010</a>)</span>; figure B). Developing countries account for a disproportionately high share of population growth. To avoid increases in hunger and poverty, food production must rise to meet the needs of the increasing population, and in particular developing economies in Asia and Africa must be able to meet the demands of their populations. Contemporarily, poverty and hunger are widespread, thus further increases in productivity will be needed if current problems are to be addressed, in addition to preventing future ones.</p>
+<p>!(Plots of global agricultural data demonstrating the need for crop improvement intervention.\ A.) Area harvested for rice 1961-2010. Increases in area harvested for rice accounted for a large proportion of the increases in total rice production which helped meet the needs of growing populations from 1960 to the 1990s. Around 2000 the area under rice cultivation reached the maximum land available (produced using data from http://faostat3.fao.org/). \ B.) Past and projected global and Asian Developing Nations (ADN) populations (produced using data from <span class="citation">UNDESA (<a href="#ref-undesa2010">2010</a>)</span>))[includes/background/c4rice/agriculturedata.pdf]</p>
+<p>Throughout and since the Green Revolution the rate of yield increase has remained steady. However, the proportional contribution of breeding to that increase has steadily declined, while the proportion of yield increase derived from increased fertilizer use has risen <span class="citation">(ZhongYu and YongChang <a href="#ref-zhongyu2000">2000</a>)</span>. This presents a major challenge to food production; increases from intensification of fertiliser are predicted to abate in the near future, and problems of sustainability threaten continued reliance on nutrient enrichment of soils.</p>
+<p>The area of land under production of rice increased greatly from 1960-1990, and this increase contributed to the ability of the rice supply to keep up with the increase in demand. However, from 1990-2010 increases in area under production have fallen as the limits of arable land area are reached (figure A). Thus in the future, unless new rice strains are developed which can enable more marginal lands to be brought under production, increases in area farmed will contribute negligibly to increases in rice production.</p>
+<p>Taken together, these factors demonstrate a clear and urgent need for greater increases in rice yields, area under production, or both. Various technical solutions have been proposed, many of which include improving tolerance of rice to abiotic stresses such as drought, or involve incremental increases in yield. However, it is now increasingly recognised that the yield of modern rice strains is close to the theoretical maximum for the plant <span class="citation">(Evenson and Gollin <a href="#ref-evenson2003">2003</a>)</span>. Thus an intervention is needed that can raise the theoretical maximum yield. By introducing a different, more efficient photosynthetic system into rice, maximum yield capacity could be greatly increased at the same time as decreasing water and nitrogen requirements.</p>
+</div>
+<div id="the-c4-rice-project" class="section level2">
+<h2><span class="header-section-number">1.3</span> The C<sub>4</sub> rice project</h2>
+<p>A coordinated international effort is underway to engineer the C4 photosynthetic machinery into rice <span class="citation">(J. M. Hibberd, Sheehy, and Langdale <a href="#ref-hibberd2008">2008</a>)</span>. This program, and similar programs for other C3 crops (notably wheat), could produce a vast humanitarian benefit by increasing the maximum yield potential of some of the world’s major staple food crops by approximately 50% <span class="citation">(P. L. Mitchell and Sheehy <a href="#ref-mitchell2006">2006</a>)</span>.</p>
+<p>Thus far, individual enzymes of the pathway from maize, which is very well characterised, have been individually transformed into a rice background and are now being stacked by crossing <span class="citation">(Kajala et al. <a href="#ref-kajala2011">2011</a>)</span>. Mutant screens have been carried out seeking determinants of kranz anatomy in sorghum and maize, or precursory elements of kranz in rice, but have yielded few actionable insights <span class="citation">(Jane A. Langdale <a href="#ref-langdale2011">2011</a>)</span>. Now, systems-level approaches approaches being used in existing and new model species to attempt to elucidate the regulatory elements of the pathway.</p>
+</div>
+<div id="the-developmental-dynamics-of-the-c4-leaf" class="section level2">
+<h2><span class="header-section-number">1.4</span> The developmental dynamics of the C<sub>4</sub> leaf</h2>
+<p>C<sub>4</sub> leaves must execute a developmental programme that enables the differentiation of BS and M cells anatomically, ultrastructurally and biochemically. All C<sub>4</sub> leaves begin their development with C<sub>3</sub>-like anatomy and physiology, and the C<sub>4</sub> state is gradually overlaid on the ancestral state by developmental regulation. In maize and <em>Amaranth</em>, the partitioning of photosynthetic genes into their respective cell types depends on the developmental light cues the leaf receives <span class="citation">(J A Langdale et al. <a href="#ref-langdale1988">1988</a>; J. L. Wang et al. <a href="#ref-wang1993">1993</a>)</span>, and in maze this programme can only be initiated in cells immediately surrounding the vasculature <span class="citation">(Jane A. Langdale and Nelson <a href="#ref-langdale1991">1991</a>)</span>. In maize <span class="citation">(Majeran et al. <a href="#ref-majeran2005">2005</a>; Majeran and Wijk <a href="#ref-majeran2009">2009</a>)</span> and C<sub>4</sub> <em>Sueda</em> <span class="citation">(Koteyeva et al. <a href="#ref-koteyeva2011">2011</a>)</span>, <em>Flaveria</em> (<span class="citation">McKown and Dengler (<a href="#ref-mckown2007">2007</a>)</span>, Kuempers, pers.comm) and <em>Cleome</em> (Aubry, pers. comm.) species, vasculature and plastid morphology and arrangement gradually reach the mature C<sub>4</sub> state along a developmental gradient in young C<sub>4</sub> leaves, with increasing density of venation and differential chloroplast structure between BS and M cells being representative of the transition.</p>
+<!-- TODO: replace pers comm in previous paragraph with citations of subsequently published work -->
+<p>Understanding the molecular basis of this developmental programme is of primary importance, and the C<sub>4</sub> community has converged on high-throughput methods of molecular quantification as a key and fruitful approach. In maize, quantitative proteomics <span class="citation">(Majeran et al. <a href="#ref-majeran2005">2005</a>; Majeran et al. <a href="#ref-majeran2008">2008</a>; Majeran et al. <a href="#ref-majeran2010">2010</a>)</span>, microarray analysis <span class="citation">(Sawers et al. <a href="#ref-sawers2007">2007</a>)</span>, and recently RNA-seq <span class="citation">(P. Li et al. <a href="#ref-li2010-b">2010</a>; Chang et al. <a href="#ref-chang2012">2012</a>; P. Wang et al. <a href="#ref-wang2013">2013</a>; Y. Liu, Schröder, and Schmidt <a href="#ref-liu2013">2013</a>)</span> have been leveraged in experiments designed to capture cell-type specific and/or developmental differences in peptide and transcript expression. These experiments have enabled the identification of candidate transcription factors and other regulatory elements whose expression coincides with C<sub>4</sub> genes, and are therefore candidate C<sub>4</sub> regulators which are now being characterised <span class="citation">(Covshoff and Hibberd <a href="#ref-covshoff2012">2012</a>)</span>.</p>
+<p>While these detailed analyses have so far been restricted to maize due to the extensive genomic resources available in that system, recent advances in high-throughput sequencing, <i>de-novo</i> assembly, expression quantification (see section ) and cell-specific RNA extraction (e.g. <span class="citation">Covshoff et al. (<a href="#ref-covshoff2013">2013</a>)</span>) now enable the application of developmental and M/BS specific high-throughput analysis in a wider range of non-model species. Such experiments have been recently completed in <em>Cleome</em> (Aubry et al, in press) and are currently underway in <em>Flaveria</em> (Kuempers, pers. comm.) and <em>Setaria</em> (John, pers. comm.). The repeated evolution of C<sub>4</sub> necessitates its study in a broad range of species, both to give insight into the evolution of the syndrome at the molecular level, and to discover whether the regulatory mechanisms underlying development and maintenance C<sub>4</sub> evolved in parallel.</p>
+<!-- TODO: replace pers comm in previous paragraph with citations of subsequently published work -->
+<p>A complementary experimental design in which expression profiles are compared between closely <span class="citation">(Gowik and Westhoff <a href="#ref-gowik2011">2011</a>; Bräutigam et al. <a href="#ref-brautigam2011">2011</a>)</span> or distantly (Aubry et al, in press) related C<sub>4</sub> and C<sub>3</sub> species enables those regulatory elements which are exclusively associated with C<sub>4</sub>, as opposed to having correlated expression by chance, to be identified. The ongoing 1000 Plant Transcriptomes Project (www.onekp.com) is sequencing, assembling and quantifying transcriptomes for 26 C<sub>3</sub> and 39 C<sub>4</sub> sister species across an impressive phylogenetic range and encompassing two of the three distinct biochemical subtypes of C<sub>4</sub>. These will be analysed comparatively to identify enriched genes using a new bioinformatics pipeline developed for the project (Kelly et al., in press).</p>
+<!-- TODO: replace in press in previous paragraph with citations of subsequently published work -->
+</div>
+<div id="regulation-in-cis-and-trans" class="section level2">
+<h2><span class="header-section-number">1.5</span> Regulation in <em>cis</em> and <em>trans</em></h2>
+<p>Control of genes recruited to C<sub>4</sub> can involve transcriptional and translational efficiency as well as post-transcriptional and post-translational degradation. These mechanisms can be targeted to promoters, coding regions or UTRs, and involve the evolution in both <em>cis</em> and <em>trans</em> factors.</p>
+<p><em>Cis</em>-elements in promoters of some C<sub>4</sub> genes are required for cell specificity. It has been shown that 1.7kb and 0.6kb regions upstream of <em>PEPC</em> in maize are sufficient for M-specific accumulation <span class="citation">(Kausch et al. <a href="#ref-kausch2001">2001</a>)</span>, and that the cell specificity is not present in young leaves, suggesting developmental control. Additionally, a 41bp motif in the promoter of <em>PEPC</em> in C<sub>4</sub> <em>Flaveria spp.</em> with a G-&gt;A substitution and a CACT insertion <span class="citation">(Akyildiz et al. <a href="#ref-akyildiz2007">2007</a>)</span> has been shown to be necessary and sufficient for M-cell specificity <span class="citation">(Gowik et al. <a href="#ref-gowik2004">2004</a>)</span>.</p>
+<p>Nucleotide sequence in the coding region can generate cell-specific expression in C<sub>4</sub>. Accumulation of NAD-ME in <em>Cleome gynandra</em> BS cells requires a specific 240 nucleotide sequence to be present in the 5’ region of the translated portion of the transcript <span class="citation">(Brown et al. <a href="#ref-brown2011">2011</a>)</span>. Frame shift mutation does not affect cell specificity, showing that nucleotide rather than amino acid sequence is important. The orthologous <em>AtNAD-ME</em> gene also accumulated in BS cells in <em>C. gynandra</em> and again a 240 nucleotide sequence was found to be necessary, suggesting the presence in <em>C. gynandra</em> of a <em>trans</em>-factor responsible for BS localisation.</p>
+<p>Cell specificity in some C<sub>4</sub>-recruited genes also relies on UTR sequence. In a functionally redundant manner, either 3’ or 5’ UTRs of <span class="math inline">\beta</span>-carbonic anhydrase (<em>CA4</em>) and pyruvate, orthophosphate dikinase (<em>PPDK</em>) are sufficient for M-specific localisation in <em>C. gynandra</em> <span class="citation">(M. Patel et al. <a href="#ref-patel2004">2004</a>; Kajala et al. <a href="#ref-kajala2011">2011</a>)</span>. UTRs of homologous genes from <em>A. thaliana</em> convey cell specificity when placed into <em>C. gynandra</em> <span class="citation">(Kajala et al. <a href="#ref-kajala2011">2011</a>)</span>. This again suggests <em>C. gynandra</em> has modifications in <em>trans</em> which are responsible for BS-cell specificity.</p>
+<p>PEPC kinase (PEPCk), which phosphorylates PEPC in a light-dependent manner to regulate its activity <span class="citation">(Nimmo <a href="#ref-nimmo2003">2003</a>)</span>, is rapidly degraded by the ubiquitin system in maize M cells <span class="citation">(Agetsuma et al. <a href="#ref-agetsuma2005">2005</a>)</span>. When the <em>ZmPEPC</em> gene is placed into rice the light-dark regulation is reversed <span class="citation">(Fukayama et al. <a href="#ref-fukayama2003">2003</a>)</span>. This post-translational control of expression must depend on the coding sequence, but it is not clear whether this mechanism controls cell-specificity.</p>
+<p>Williams (2012, submitted) found that the promoter, introns and UTRs of <em>CA4</em> from <em>C. gynandra</em> act as enhancer elements. In Arabidopsis, expression of <em>pCgCA4::uidA</em> (with 1025bp promoter) was 2-fold greater than <em>pAtCA4::uidA</em> (with 2119bp promoter) when measured using MU assays <span class="citation">(Jefferson, Kavanagh, and Bevan <a href="#ref-jefferson1987">1987</a>)</span>, demonstrating the role of the <em>CgCA4</em> promoter region. The <em>CgCA4</em> coding sequence with intact introns showed ~5-fold greater expression than the cDNA coding sequence when fused with <em>uidA</em> and placed under control of the 35S promoter in Arabidopsis, showing that introns of <em>CgCA4</em> act as enhancers. Bioinformatic analysis showed that introns in <em>CgCA4</em> were shorter on average than those in <em>AtCA4</em>. GUS/MU analysis of CgCA4 and AtCA4 with either or both of 5’ and 3’ UTRs missing showed that <em>CgCA4</em> UTRs had additive enhancer activity. The 5’ <em>AtCA4</em> also showed enhancer activity when an intron in the UTR was removed, while the 3’ UTR repressed expression. These results demonstrate that CA4 has complex regulation of expression mediated by multiple elements in <em>cis</em> and <em>trans</em>.</p>
+<p>Synthesising these results, it is clear that the regulation of C<sub>4</sub> has involved evolution of regulatory elements in both <em>cis</em> and <em>trans</em>. <em>cis</em>-elements in promoters, UTRs, coding sequences and introns can direct localisation and magnitude of expression, while <em>trans</em>-factors interacting with those <em>cis</em>-elements must have been recruited in C<sub>4</sub> evolution.</p>
+<p>Clearly, access to complete sequences of C<sub>4</sub> genes, transcripts and proteins in multiple species, as well as their expression in different tissues and an understanding of their contextual regulatory networks, is desirable.</p>
+</div>
+<div id="the-importance-of-wetland-c4-monocots" class="section level2">
+<h2><span class="header-section-number">1.6</span> The importance of wetland C<sub>4</sub> monocots</h2>
+<p></p>
+<p>Rain-fed paddy rice accounts for 90% of rice production <span class="citation">(Bouman et al. <a href="#ref-bouman2007">2007</a>)</span>, and a C<sub>4</sub> rice will therefore be a semi-aquatic C<sub>4</sub> plant. But previous and on-going comparative transcriptomic approaches have focused on either dicotyledons such as <em>Cleome</em> and <em>Flaveria</em> which are evolutionarily distant from cereals, or on C<sub>4</sub> monocots which grow in seasonally dry environments. It is therefore of importance, in the context of efforts to engineer C<sub>4</sub> rice, to understand how well C<sub>4</sub> might perform outside the hot and dry environment with which it is classically associated.</p>
+<p>In fact, C<sub>4</sub> monocots in wetland environments are extremely productive. <em>Echinochloa polystachya</em>, a C<sub>4</sub> grass that grows semi-aquatically along the tropical Amazon floodplain, has been shown to be among the most productive plants in a natural setting <span class="citation">Piedade, Junk, and Long (<a href="#ref-piedade1991">1991</a>)</span>, <span class="citation">Piedade, Long, and Junk (<a href="#ref-piedade1994">1994</a>)</span>], achieving rates of carbon fixation equivalent to maize under intensive cultivation <span class="citation">(Morison et al. <a href="#ref-morison2000">2000</a>)</span>. <em>Cyperus papyrus</em>, a wetland C<sub>4</sub> sedge growing in tropical African swamps, has been shown to have some of the highest rates of biomass accumulation of any plant in any habitat <span class="citation">(Jones <a href="#ref-jones1988">1988</a>; M. B. Jones and Muthuri <a href="#ref-jones1997">1997</a>; Jones and Humphries <a href="#ref-jones2002">2002</a>)</span>. These impressive yields have been attributed to the high nitrogen use efficiency of C<sub>4</sub> plants, allowing them to thrive in the oligotrophic conditions in standing swamp water, in combination with the generally higher RUE provided by bypassing photorespiration. It is therefore clear that C<sub>4</sub> can perform extremely productively in a hot, wet environment.</p>
+<p>As rice is cultivated in both tropical and temperate regions, it is equally important to consider whether C<sub>4</sub> can still perform well in cooler wet environments. Supporting evidence comes from C<sub>4</sub> weeds in rice agriculture. <em>Echinochloa glabrescens</em> often outcompetes rice in paddy cultivation <span class="citation">(Rao and Moody <a href="#ref-rao1992">1992</a>)</span>, and has been shown to have a photosynthetic efficiency of 1.8<span class="math inline">\times</span> that of rice in field experiments <span class="citation">(Sheehy et al. <a href="#ref-sheehy2007">2007</a>)</span>, while completing its life cycle in 60% of the time <span class="citation">(R. F. Sage and Zhu <a href="#ref-sage2011">2011</a>)</span>. Thus there is precedent for fast-cropping, highly productive C<sub>4</sub> plants in the conditions used for rice production.</p>
+</div>
+<div id="potential-pitfalls-of-c4-in-the-wet" class="section level2">
+<h2><span class="header-section-number">1.7</span> Potential pitfalls of C<sub>4</sub> in the wet</h2>
+<p></p>
+<p>Knowing that C<sub>4</sub> can perform well in wetland conditions in certain species, a crucial question is whether the understanding of C<sub>4</sub> operation and regulation in current and emerging dry C<sub>4</sub> model species can be transferred to the wet environment. If it can, this provides a clear roadmap for transforming C<sub>4</sub> into rice. Conversely, if there are features that allow C<sub>4</sub> to be productive in the wet that are unique to wetland species, those features must be understood in order that the knowledge can be translated to a C<sub>4</sub> rice.</p>
+<p>It seems likely that, given the unique physico-chemical conditions in semi-aquatic environments, there will be at least some such insights to be gained by studying wetland-adapted C<sub>4</sub> species. Exemplifying this, ammonium is the major nitrogen source in waterlogged soils and wetlands <span class="citation">(Watanabe <a href="#ref-watanabe1986">1986</a>)</span>, and requires special metabolic machinery to be of use in the plant <span class="citation">(Lam et al. <a href="#ref-lam1996">1996</a>)</span>. <span class="citation">Masumoto et al. (<a href="#ref-masumoto2010">2010</a>)</span> discovered that one isoform of PEPC in rice, <em>Osppc4</em>, is localised to the mesophyll chloroplast, and that this localisation is essential for successful nitrogen acquisition from ammonium. Previous attempts to overexpress C<sub>4</sub> enzymes in rice showed that, when PEPC and malic enzyme (ME) are expressed together in high concentrations, plants become stunted, possibly due to a futile metabolic cycling between the two <span class="citation">(Taniguchi et al. <a href="#ref-taniguchi2008">2008</a>; Miyao et al. <a href="#ref-miyao2011">2011</a>)</span>. However, in C<sub>4</sub> plants ME is chloroplast localised, suggesting that in combination with the chloroplast-specific <em>Osppc4</em>, a futile cycle could thwart attempts to place C<sub>4</sub> enzymes in the appropriate compartments in rice. This highlights the importance of understanding how C<sub>4</sub> operates in a wetland species to identify how the ammonium assimilation problem is solved, and whether there are other similar issues that need to be considered.</p>
+</div>
+<div id="echinochloa-glabrescens-as-a-model-for-wet-c4" class="section level2">
+<h2><span class="header-section-number">1.8</span> <em>Echinochloa glabrescens</em> as a model for wet C<sub>4</sub></h2>
+<p><em>E. glabrescens</em> grows alongside rice <span class="citation">(Rao and Moody <a href="#ref-rao1992">1992</a>)</span>, outcompetes it unless rigorously suppressed <span class="citation">(S. C. Kim and Moody <a href="#ref-kim1980">1980</a>)</span>, and has a nearly identical growth form <span class="citation">(S. C. Kim and Moody <a href="#ref-kim1989">1989</a>)</span>. These facts suggest that insights gained from studying the operation of C<sub>4</sub> in <em>E. glabrescens</em> will be directly translatable to engineering rice. In addition, a considerable literature exists on the species due to its interest as a pest of rice cultivation (e.g. <span class="citation">Janiya and Moody (<a href="#ref-janiya1984">1984</a>)</span>, <span class="citation">J. S. Kim and Mercado (<a href="#ref-kim1987">1987</a>)</span>, <span class="citation">J. S. Kim (<a href="#ref-kim1988">1988</a>)</span>, <span class="citation">Alberto et al. (<a href="#ref-alberto1996">1996</a>)</span>). It is therefore suggested that <em>E. glabrescens</em> be developed as system for studying C<sub>4</sub> photosynthesis in the wet.</p>
+</div>
+<div id="de-novo-transcriptomics" class="section level2">
+<h2><span class="header-section-number">1.9</span> <i>de-novo</i> transcriptomics</h2>
+<p></p>
+<p>The transcriptome of a tissue is the population of mRNAs present at a snapshot in time. <i>de-novo</i> transcriptomics involves assaying the transcriptome of a species which does not have a sequenced genome, and requires using only the evidence present in sequenced reads to reassemble the sequence of origin. In principle, <i>de-novo</i> transcriptomics promises massively parallel retrieval of the sequences of all transcripts present in a sample, along with highly sensitive estimates of the abundance of those transcripts. In practise however, the ability to do this is dependent on the interface between DNA sequencing technology, computational tools, and cost in both time and money.</p>
+<p>Because <i>de-novo</i> transcriptomics offers the potential to obtain the sequences of many transcripts, it is by far the most cost-effective method for investigating multiple gene sequences in a novel species. And because expression quantification can be performed using the same data, systems-level approaches to reconstructing regulatory networks are made possible. In general, expression quantification with a high degree of accuracy, as measured by comparison to qPCR data, is possible using current methods. Accurate reconstruction of full-length transcripts for the purposes of nucleotide-sensitive phylogenetic analysis or motif discovery, however, is not yet mature.</p>
+<p>Although the availability of computing power continues to increase rapidly, the capacity of sequencing technology is growing even faster. As a result, the running time of the algorithms used to perform simple overlap consensus assemblies such as the first draft of the human genome have become unworkable with modern high-throughput sequencing data <span class="citation">(L. D. Stein <a href="#ref-stein2010">2010</a>)</span>. Errors and uncertainties in the sequence data complicate the process and need to be addressed prior to assembly. Simple approaches to quality control of sequence data include trimming low-quality bases from reads and removing reads with an average quality below some threshold <span class="citation">(Schmieder and Edwards <a href="#ref-schmieder2011">2011</a>; Lohse et al. <a href="#ref-lohse2012">2012</a>)</span>. To further remove errors which are not identified by the quality scores produced by the sequencing machine, various models exist which attempt to learn the locations of errors by comparing reads to one another <span class="citation">(Le et al. <a href="#ref-le2013">2013</a>)</span>, or using graph-based metrics <span class="citation">(C. T. Brown et al. <a href="#ref-brown2012">2012</a>)</span>. To perfectly reassamble the sequences of transcripts <i>de-novo</i> using even error-corrected short reads is a challenge far beyond current computational capabilities <span class="citation">(Pop and Salzberg <a href="#ref-pop2008">2008</a>)</span>, necessitating the use of mathematical simplifications and computational shortcuts to approximate a solution <span class="citation">(Baker <a href="#ref-baker2012">2012</a>)</span>.</p>
+<p>The key algorithmic approaches to assembly from short read data draw heavily on graph theory, representing overlaps between reads as graphs with overlaps as nodes and the sequences themselves edges, and using graph traversal to trace the path of the original sequence. The de Bruijn graph <span class="citation">(Bruijn and Erdos <a href="#ref-debruijn1946">1946</a>; Idury and Waterman <a href="#ref-idury1995">1995</a>)</span>, in which reads are treated as collections of sub-words, is the most commmonly used data structure for this purpose (e.g. <span class="citation">P. A. Pevzner, Tang, and Waterman (<a href="#ref-pevzner2001">2001</a>)</span>, <span class="citation">D. R. Zerbino and Birney (<a href="#ref-zerbino2008">2008</a>)</span>, <span class="citation">J. T. Simpson et al. (<a href="#ref-simpson2009">2009</a>)</span>, <span class="citation">Robertson et al. (<a href="#ref-robertson2010">2010</a>)</span>, <span class="citation">Grabherr et al. (<a href="#ref-grabherr2011">2011</a>)</span>, <span class="citation">Schulz et al. (<a href="#ref-schulz2012">2012</a>)</span>). Recent theoretical improvements to this approach have been suggested. Using string graphs which do not use sub-words <span class="citation">(E. W. Myers <a href="#ref-myers2005">2005</a>; J. T. Simpson and Durbin <a href="#ref-simpson2010">2010</a>; J. T. Simpson and Durbin <a href="#ref-simpson2011">2011</a>; Gonnella and Kurtz <a href="#ref-gonnella2012">2012</a>)</span> or variations on paired de Bruijn graphs which retain read-pairing information <span class="citation">(Medvedev et al. <a href="#ref-medvedev2011">2011</a>; S. K. Pham et al. <a href="#ref-pham2012">2012</a>)</span> are examples, although implementations of these are in their infancy. The only graph traversal algorithms possible for any of these graphs involve the Eulerian Path, in which every edge is visited; solving the alternative Hamiltonian path, visiting every node, is an NP (nondeterministic polynomial time) complete problem <span class="citation">(P. A. Pevzner <a href="#ref-pevzner1989">1989</a>; Hoogeveen <a href="#ref-hoogeveen1991">1991</a>)</span>, meaning it is not computationally feasible for any significant size of input data. The precise approach differs between genome and transcriptome assembly, because in eukaryotes the transcriptome carries the additional complexity of resolving splice variants.</p>
+<p>For all graph assembly methods, errors in read sequences lead to bubbles in the graph, with each error creating two transcripts where only one is real <span class="citation">(Baker <a href="#ref-baker2012">2012</a>)</span>. Additionally, repetitive sequences can lead to artifical loops which join fragments together <em>in silico</em> where so such connection exists <em>in vivo</em>, leading to chimeric transcript sequences <span class="citation">(Pop and Salzberg <a href="#ref-pop2008">2008</a>; A. Phillippy, Schatz, and Pop <a href="#ref-phillippy2008">2008</a>)</span>. Varying the parameters of the graph traversal algorithm can reduce the number of erroneous paths traced, for example by using longer substrings to calculate overlaps and only traversing paths supported by a certain number of connections <span class="citation">(Compeau, Pevzner, and Tesler <a href="#ref-compeau2011">2011</a>)</span>. However, this approach leads to greater fragmentation of the graph as some real corrections are ignored. Thus, all current assembly algorithms can either operate only on very small datasets, or introduce artefacts and errors during the assembly process.</p>
+<p>Post-assembly, attempts can be made to remedy the problems introduced at the assembly stage. Current approaches to this problem use mutliple alignment based clustering <span class="citation">(W. Li and Godzik <a href="#ref-li2006">2006</a>; Edgar <a href="#ref-edgar2010">2010</a>)</span> to remove redundant contigs representing parts of the same transcript derived from bubbling of the graph. The problems of identifying and removing chimeric transcripts and sequences derived entirely from assembly artefacts are currently unsolved.</p>
+<p>There are thus several stages of a <i>de-novo</i> assembly, with multiple programs at each stage, and each program can be configured in various ways. Pipeline development is hampered by the lack of specialised tools for assessing transcriptome assembly quality. While such tools have been developed for genome assembly <span class="citation">(Earl et al. <a href="#ref-earl2011">2011</a>; Gurevich et al. <a href="#ref-gurevich2013">2013</a>)</span>, the same metrics do not provide useful information about transcriptomes.</p>
+<p>Assembly tools are non-trivial to operate, often requiring learning a novel interface and performing file-type conversions on the input and output. Moreover, determining the optimal pipeline to use is an open problem, largely because of the complexity of options. There are at least 10 possible programs to include at each of three stages in a pipeline, with at least 20 settings per program. Testing 4 values for each setting would mean testing <span class="math inline">(10\times20\times4)^3 = 512,000,000</span> possible pipelines. With the running time of assemblers varying from ~20min to &gt;6 hours in this study, clearly it is unfeasible to test all possible pipelines. For this reason, only the most rudimentary optimisation of assembly, in which a few parameters are varied for a single program, has been attempted in previous studies <span class="citation">(R. Chikhi and Medvedev <a href="#ref-chikhi2013">2013</a>)</span>.</p>
+<p>In summary, there are still significant challenges associated with obtaining highly accurate transcriptome assemblies. In order to address these problems, one research track in this study involves developing software to solve the problems of assessing transcriptome assembly quality, easily developing assembly pipelines, and optimising transcriptome assembly.</p>
+</div>
+</div>
+<div id="improving-de-novo-transcriptomics-tools" class="section level1">
+<h1><span class="header-section-number">2</span> Improving <i>de-novo</i> transcriptomics tools</h1>
+<div id="measuring-transcriptome-assemblies-transrate" class="section level2">
+<h2><span class="header-section-number">2.1</span> Measuring transcriptome assemblies (transrate)</h2>
+</div>
+<div id="in-pursuit-of-the-optimal-transcriptome-assembly" class="section level2">
+<h2><span class="header-section-number">2.2</span> In pursuit of the optimal transcriptome assembly</h2>
+<p>The goal of transcriptome assembly is to reproduce the sequences of all transcripts present in a sequenced sample. Although considerable progress towards this goal has been made, current methods fall far short of perfection. A typical transcriptome assembly program has many tunable parameters that control aspects of the algorithm. However, a single set of parameters is usually chosen to produce the assembly that is used for downstream analysis. Often the choice is made implicitly, by using the default settings of the software, rather than by systematically selecting the best values. Simply by ignoring the range of behaviours offered by the assembly tool, current practices exclude possible well-assembled transcript sequences from the results. More rarely, multiple assemblies are produced and merged together. It is notable that none of the de-novo transcriptome assembly merging pipelines to date account for the unique features of transcriptome data, so the merging process is error-prone.</p>
+<p>In this chapter I will explore how a transcriptome assembly might be optimised and improved algorithmically. This will build on the work in the previous chapter that established a method for reference-free quality assessment of contigs and whole <em>de-novo</em> transcriptome assemblies. The implicit assumptions of current standard practice will be explored and tested. Motivated by these results, I will explain new methods for the automated optimisation of transcriptome assembly and their implementation in the <code>Assemblotron</code> software.</p>
+<div id="background" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Background</h3>
+<p>…</p>
+</div>
+<div id="assembly-quality-varies-with-algorithm-and-parameterisation" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Assembly quality varies with algorithm and parameterisation</h3>
+<!-- Code and data for the plot below are in the assemblotron-paper repo at /figures/yeast_fulldata_soap_sweep_Kde.R and data/yeast/yeast_stream_100pc_*.csv -->
+<a name="fig:sweep"></a>
+<div class="figure">
+<img src="figures/yeast_fulldata_soap_sweep_Kde.png" alt="Figure 1. Assembly quality (as measured by Transrate score) for 180 assemblies performed with SOAPdenovoTrans, varying parameters K (TODO: what is it, what values?), d (TODO: what is it, what values?), and e (TODO: what is it, what values?)." />
+<p class="caption">Figure 1. Assembly quality (as measured by Transrate score) for 180 assemblies performed with SOAPdenovoTrans, varying parameters K (TODO: what is it, what values?), d (TODO: what is it, what values?), and e (TODO: what is it, what values?).</p>
+</div>
+</div>
+<div id="assembly-is-computationally-expensive-making-exhaustive-optimisation-impossible" class="section level3">
+<h3><span class="header-section-number">2.2.3</span> Assembly is computationally expensive, making exhaustive optimisation impossible</h3>
+<!-- Data from table 4 in khmer diginorm paper http://arxiv.org/pdf/1203.4802v2.pdf -->
+<table>
+<caption>Time taken to assemble <em>de-novo</em> transcriptomes of Yeast and Mouse from 100 million paired-end RNA-seq reads, using either Oases or Trinity (TODO: cite diginorm paper).</caption>
+<thead>
+<tr class="header">
+<th align="left">Assembly</th>
+<th align="left">N reads</th>
+<th align="left">Time (min)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Yeast (Oases)</td>
+<td align="left">100m</td>
+<td align="left">181</td>
+</tr>
+<tr class="even">
+<td align="left">Yeast (Trinity)</td>
+<td align="left">100m</td>
+<td align="left">887</td>
+</tr>
+<tr class="odd">
+<td align="left">Mouse (Oases)</td>
+<td align="left">100m</td>
+<td align="left">761</td>
+</tr>
+<tr class="even">
+<td align="left">Mouse (Trinity)</td>
+<td align="left">100m</td>
+<td align="left">2297</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="read-sampling-gives-a-speedup-while-preserving-quality-distribution" class="section level3">
+<h3><span class="header-section-number">2.2.4</span> Read sampling gives a speedup while preserving quality distribution</h3>
+<div class="figure">
+<img src="figures/reservoir_vs_partition.png" alt="Two strategies for sampling RNA-Seq read pairs. (A) Reservoir sampling produces a uniform random sample of the input read pairs in a single pass through the input files. This method samples reads uniformly. (B) Partition sampling builds a de-Brujn graph from the reads and samples connected partitions of the graph before outputting the reads from the sampled partitions. This method samples transcripts/genes uniformly." />
+<p class="caption">Two strategies for sampling RNA-Seq read pairs. (A) Reservoir sampling produces a uniform random sample of the input read pairs in a single pass through the input files. This method samples reads uniformly. (B) Partition sampling builds a de-Brujn graph from the reads and samples connected partitions of the graph before outputting the reads from the sampled partitions. This method samples transcripts/genes uniformly.</p>
+</div>
+</div>
+<div id="finding-the-optimal-parameters-without-exhaustive-searching" class="section level3">
+<h3><span class="header-section-number">2.2.5</span> Finding the optimal parameters without exhaustive searching</h3>
+<!-- Code and data for the plot below are in the assemblotron-paper repo at /figures/yeast_fulldata_optimisation_sim.R and data/yeast/yeast_stream_100pc_*.csv -->
+<div class="figure">
+<img src="figures/tabu_optimisation_sim.png" alt="Performance of the Tabu Search optimisation algorithm in a simulation. Data from the full parameter sweep of soap-denovotrans on yeast data were used to simulate the optimisation process. 100 runs of the optimisation were carried out. (A) The best transrate score achieved to date. (B) The transrate score of each run. Points represent the mean across all runs and threads, with line ranges +/- standard error." />
+<p class="caption">Performance of the Tabu Search optimisation algorithm in a simulation. Data from the full parameter sweep of soap-denovotrans on yeast data were used to simulate the optimisation process. 100 runs of the optimisation were carried out. (A) The best transrate score achieved to date. (B) The transrate score of each run. Points represent the mean across all runs and threads, with line ranges +/- standard error.</p>
+</div>
+</div>
+<div id="assemblotron" class="section level3">
+<h3><span class="header-section-number">2.2.6</span>  Assemblotron</h3>
+<div id="algorithm-and-workflow" class="section level4">
+<h4><span class="header-section-number">2.2.6.1</span> Algorithm and workflow</h4>
+<div class="figure">
+<img src="figures/assemblotron_workflow.png" alt="The assemblotron workflow: (a) Paired-end reads are input. (b) Reads are digitally normalised to a median coverage of 20. (c) Normalised reads are sampled in triplicate using one of several sampling algorithms. (d) Each sample is assembled initally using a range of parameter values for each assembler. The assemblies are scored with (e) One of several optimisation strategies is used to explore the parameter space for each assembler and identify high-scoring areas. (f) The high-scoring parameters are used to generate assemblies from the full normalised read set. (g) All assemblies from the full reads are merged to preserve the unique information in each." />
+<p class="caption">The assemblotron workflow: (a) Paired-end reads are input. (b) Reads are digitally normalised to a median coverage of 20. (c) Normalised reads are sampled in triplicate using one of several sampling algorithms. (d) Each sample is assembled initally using a range of parameter values for each assembler. The assemblies are scored with (e) One of several optimisation strategies is used to explore the parameter space for each assembler and identify high-scoring areas. (f) The high-scoring parameters are used to generate assemblies from the full normalised read set. (g) All assemblies from the full reads are merged to preserve the unique information in each.</p>
+</div>
+</div>
+<div id="performance" class="section level4">
+<h4><span class="header-section-number">2.2.6.2</span> Performance</h4>
+</div>
+</div>
+</div>
+</div>
+<div id="high-quality-transcriptomic-resources-for-c4-research" class="section level1">
+<h1><span class="header-section-number">3</span> High-quality transcriptomic resources for C<sub>4</sub> research</h1>
+<p>Lorem ipsum dolor sit amet, duo simul liberavisse an. In duis dicam suscipiantur pri, ea nibh impetus instructior per, ne vis decore inermis. Cum graeci lucilius eloquentiam cu, id corrumpit democritum vix, his ei facete ancillae pericula. Scripta impedit tincidunt et mei, malorum bonorum interesset te vis, noster tacimates ius cu. Meliore consulatu at duo, quaeque quaestio platonem nec no. Mel eu tota fabellas, copiosae aliquando quo eu. Ex duo appetere consulatu.</p>
+<p>Iudico graecis vivendo eos an, consul commune hendrerit ius ad. In mei blandit persequeris appellantur. Solum constituto qui ad, no nonumy ponderum inimicus nam. At homero accommodare cum, ad eam novum homero.</p>
+<p>Rebum mandamus usu et, at sed dicta percipitur, has everti equidem cotidieque et. An sint commodo gloriatur eam, mea ut imperdiet sententiae adipiscing. Eu nulla rationibus vim. Ne nisl sint deseruisse sea, no usu nulla consulatu comprehensam. Cum tale mediocrem ut. Movet ponderum conceptam pro ad.</p>
+<p>Diam invenire expetenda qui ut, fabulas definitiones ut sit, id sed natum assueverit. Dico inciderint cu vim, veri omnesque eos ea. Erroribus patrioque no nec, quis voluptatum qui ne. Impedit appetere nominati ea vis, wisi maluisset nec eu.</p>
+<p>Omnis omnes ubique cu per. Labores vivendum platonem ei has, suas vulputate cu pro, id possit ponderum interesset quo. Accusam eligendi pertinacia no sit, nec tempor dissentiet te, has quis nonumes in. Vis in omnes consequat, duo ea quodsi delenit minimum, ei graeco dicunt copiosae nam. Pri ex iisque erroribus. Et fabellas disputationi usu.</p>
+</div>
+<div id="reasoning-about-c4-with-a-phylogenetically-structured-model" class="section level1">
+<h1><span class="header-section-number">4</span> Reasoning about C<sub>4</sub> with a phylogenetically structured model</h1>
+<p>Lorem ipsum dolor sit amet, duo simul liberavisse an. In duis dicam suscipiantur pri, ea nibh impetus instructior per, ne vis decore inermis. Cum graeci lucilius eloquentiam cu, id corrumpit democritum vix, his ei facete ancillae pericula. Scripta impedit tincidunt et mei, malorum bonorum interesset te vis, noster tacimates ius cu. Meliore consulatu at duo, quaeque quaestio platonem nec no. Mel eu tota fabellas, copiosae aliquando quo eu. Ex duo appetere consulatu.</p>
+<p>Iudico graecis vivendo eos an, consul commune hendrerit ius ad. In mei blandit persequeris appellantur. Solum constituto qui ad, no nonumy ponderum inimicus nam. At homero accommodare cum, ad eam novum homero.</p>
+<p>Rebum mandamus usu et, at sed dicta percipitur, has everti equidem cotidieque et. An sint commodo gloriatur eam, mea ut imperdiet sententiae adipiscing. Eu nulla rationibus vim. Ne nisl sint deseruisse sea, no usu nulla consulatu comprehensam. Cum tale mediocrem ut. Movet ponderum conceptam pro ad.</p>
+<p>Diam invenire expetenda qui ut, fabulas definitiones ut sit, id sed natum assueverit. Dico inciderint cu vim, veri omnesque eos ea. Erroribus patrioque no nec, quis voluptatum qui ne. Impedit appetere nominati ea vis, wisi maluisset nec eu.</p>
+<p>Omnis omnes ubique cu per. Labores vivendum platonem ei has, suas vulputate cu pro, id possit ponderum interesset quo. Accusam eligendi pertinacia no sit, nec tempor dissentiet te, has quis nonumes in. Vis in omnes consequat, duo ea quodsi delenit minimum, ei graeco dicunt copiosae nam. Pri ex iisque erroribus. Et fabellas disputationi usu.</p>
+<div class="references">
+<h1 id="references" class="unnumbered">References</h1>
+<div id="ref-agetsuma2005">
+<p>Agetsuma, Masakazu, Tsuyoshi Furumoto, Shuichi Yanagisawa, and Katsura Izui. 2005. “The Ubiquitin–Proteasome Pathway Is Involved in Rapid Degradation of Phosphoenolpyruvate Carboxylase Kinase for C4 Photosynthesis.” <em>Plant and Cell Physiology</em> 46 (3): 389–98. <a href="http://doi.org/10.1093/pcp/pci043">doi:10.1093/pcp/pci043</a>.</p>
+</div>
+<div id="ref-akyildiz2007">
+<p>Akyildiz, Meryem, Udo Gowik, Sascha Engelmann, Maria Koczor, Monika Streubel, and Peter Westhoff. 2007. “Evolution and Function of a Cis-Regulatory Module for Mesophyll-Specific Gene Expression in the C4 Dicot Flaveria Trinervia.” <em>The Plant Cell</em> 19 (11): 3391–3402. <a href="http://doi.org/10.1105/tpc.107.053322">doi:10.1105/tpc.107.053322</a>.</p>
+</div>
+<div id="ref-alberto1996">
+<p>Alberto, AMP, LH Ziska, CR Cervancia, and PA Manalo. 1996. “The Influence of Increasing Carbon Dioxide and Temperature on Competitive Interactions Between a C3 Crop, Rice (Oryza Sativa) and a C4 Weed (Echinochloa Glabrescens).” <em>Functional Plant Biology</em> 23 (6): 795–802. <a href="http://www.publish.csiro.au/paper/PP9960795" class="uri">http://www.publish.csiro.au/paper/PP9960795</a>.</p>
+</div>
+<div id="ref-anderson1971">
+<p>Anderson, Louise E. 1971. “Chloroplast and Cytoplasmic Enzymes II. Pea Leaf Triose Phosphate Isomerases.” <em>Biochimica et Biophysica Acta (BBA) - Enzymology</em> 235 (1): 237–44. <a href="http://doi.org/10.1016/0005-2744(71)90051-9">doi:10.1016/0005-2744(71)90051-9</a>.</p>
+</div>
+<div id="ref-aubry2011">
+<p>Aubry, Sylvain, Naomi J. Brown, and Julian M. Hibberd. 2011. “The Role of Proteins in C3 Plants Prior to Their Recruitment into the C4 Pathway.” <em>Journal of Experimental Botany</em> 62 (9): 3049–59. <a href="http://doi.org/10.1093/jxb/err012">doi:10.1093/jxb/err012</a>.</p>
+</div>
+<div id="ref-baker2012">
+<p>Baker, Monya. 2012. “De Novo Genome Assembly: What Every Biologist Should Know.” <em>Nature Methods</em> 9 (4): 333–37. <a href="http://doi.org/10.1038/nmeth.1935">doi:10.1038/nmeth.1935</a>.</p>
+</div>
+<div id="ref-beerling2011">
+<p>Beerling, David J., and Dana L. Royer. 2011. “Convergent Cenozoic CO2 History.” <em>Nature Geoscience</em> 4 (7): 418–20. <a href="http://doi.org/10.1038/ngeo1186">doi:10.1038/ngeo1186</a>.</p>
+</div>
+<div id="ref-bekker2004">
+<p>Bekker, A., H. D. Holland, P.-L. Wang, D. Rumble, H. J. Stein, J. L. Hannah, L. L. Coetzee, and N. J. Beukes. 2004. “Dating the Rise of Atmospheric Oxygen.” <em>Nature</em> 427 (6970): 117–20. <a href="http://doi.org/10.1038/nature02260">doi:10.1038/nature02260</a>.</p>
+</div>
+<div id="ref-berner1998">
+<p>Berner, Robert A. 1998. “The Carbon Cycle and Carbon Dioxide over Phanerozoic Time: The Role of Land Plants.” <em>Philosophical Transactions of the Royal Society of London. Series B: Biological Sciences</em> 353 (1365): 75–82. <a href="http://doi.org/10.1098/rstb.1998.0192">doi:10.1098/rstb.1998.0192</a>.</p>
+</div>
+<div id="ref-bjorkman1971">
+<p>Björkman, O., M. D. Hatch, C. B. Osmond, and R. O. Slatyer. 1971. “Comparative Photosynthetic CO2 Exchange in Higher Plants.” 18–32. <a href="http://www.cabdirect.org/abstracts/19721706472.html;jsessionid=F0EE97ECCABD456E5A4B550BE09E3C3E" class="uri">http://www.cabdirect.org/abstracts/19721706472.html;jsessionid=F0EE97ECCABD456E5A4B550BE09E3C3E</a>.</p>
+</div>
+<div id="ref-bouman2007">
+<p>Bouman, B., R. Barker, E. Humphreys, T. P. Tuong, G. Atlin, J. Bennett, D. Dawe, et al. 2007. “Rice: Feeding the Billions.” In <em>Water for Food, Water for Life: A Comprehensive Assessment of Water Management in Agriculture</em>, 515–49. Colombo, Sri Lanka: IWMI. <a href="http://agris.fao.org/agris-search/search/display.do?f=2012/QL/QL1201.xml;QL2012001810" class="uri">http://agris.fao.org/agris-search/search/display.do?f=2012/QL/QL1201.xml;QL2012001810</a>.</p>
+</div>
+<div id="ref-brautigam2011">
+<p>Bräutigam, Andrea, Kaisa Kajala, Julia Wullenweber, Manuel Sommer, David Gagneul, Katrin L. Weber, Kevin M. Carr, et al. 2011. “An mRNA Blueprint for C4 Photosynthesis Derived from Comparative Transcriptomics of Closely Related C3 and C4 Species.” <em>Plant Physiology</em> 155 (1): 142–56. <a href="http://doi.org/10.1104/pp.110.159442">doi:10.1104/pp.110.159442</a>.</p>
+</div>
+<div id="ref-brown2012">
+<p>Brown, C. Titus, Adina Howe, Qingpeng Zhang, Alexis B. Pyrkosz, and Timothy H. Brom. 2012. “A Reference-Free Algorithm for Computational Normalization of Shotgun Sequencing Data.” <em>arXiv:1203.4802</em>, March. <a href="http://arxiv.org/abs/1203.4802" class="uri">http://arxiv.org/abs/1203.4802</a>.</p>
+</div>
+<div id="ref-brown2011">
+<p>Brown, Naomi J., Christine A. Newell, Susan Stanley, Jit E. Chen, Abigail J. Perrin, Kaisa Kajala, and Julian M. Hibberd. 2011. “Independent and Parallel Recruitment of Preexisting Mechanisms Underlying C4 Photosynthesis.” <em>Science</em> 331 (6023): 1436–39. <a href="http://doi.org/10.1126/science.1201248">doi:10.1126/science.1201248</a>.</p>
+</div>
+<div id="ref-brown1978">
+<p>Brown, R. H. 1978. “A Difference in N Use Efficiency in C3 and C4 Plants and Its Implications in Adaptation and Evolution.” <em>Crop Science</em> 18 (1): 93–98. <a href="http://doi.org/10.2135/cropsci1978.0011183X001800010025x">doi:10.2135/cropsci1978.0011183X001800010025x</a>.</p>
+</div>
+<div id="ref-brown1999">
+<p>Brown, R. Harold. 1999. “Agronomic Implications of C4 Photosynthesis.” In <em>C4 Plant Biology</em>, 473–507. San Diego: Academic Press. <a href="http://www.sciencedirect.com/science/article/pii/B978012614440650015X" class="uri">http://www.sciencedirect.com/science/article/pii/B978012614440650015X</a>.</p>
+</div>
+<div id="ref-debruijn1946">
+<p>Bruijn, Nicolaas Govert de, and Paul Erdos. 1946. “A Combinatorial Problem.” <em>Koninklijke Nederlandse Akademie V. Wetenschappen</em> 49 (49): 758–64.</p>
+</div>
+<div id="ref-campbell1990">
+<p>Campbell, William J., and William L. Ogren. 1990. “Glyoxylate Inhibition of Ribulosebisphosphate Carboxylase/oxygenase Activation in Intact, Lysed, and Reconstituted Chloroplasts.” <em>Photosynthesis Research</em> 23 (3): 257–68. <a href="http://doi.org/10.1007/BF00034856">doi:10.1007/BF00034856</a>.</p>
+</div>
+<div id="ref-cerling1997">
+<p>Cerling, Thure E., John M. Harris, Bruce J. MacFadden, Meave G. Leakey, Jay Quade, Vera Eisenmann, and James R. Ehleringer. 1997. “Global Vegetation Change Through the Miocene/Pliocene Boundary.” <em>Nature</em> 389 (6647): 153–58. <a href="http://doi.org/10.1038/38229">doi:10.1038/38229</a>.</p>
+</div>
+<div id="ref-chang2012">
+<p>Chang, Yao-Ming, Wen-Yu Liu, Arthur Chun-Chieh Shih, Meng-Ni Shen, Chen-Hua Lu, Mei-Yeh Jade Lu, Hui-Wen Yang, et al. 2012. “Characterizing Regulatory and Functional Differentiation Between Maize Mesophyll and Bundle Sheath Cells by Transcriptomic Analysis.” <em>Plant Physiology</em> 160 (1): 165–77. <a href="http://doi.org/10.1104/pp.112.203810">doi:10.1104/pp.112.203810</a>.</p>
+</div>
+<div id="ref-chastain1989">
+<p>Chastain, Chris J., and William L. Ogren. 1989. “Glyoxylate Inhibition of Ribulosebisphosphate Carboxylase/Oxygenase Activation State in Vivo.” <em>Plant and Cell Physiology</em> 30 (7): 937–44. <a href="http://pcp.oxfordjournals.org/content/30/7/937" class="uri">http://pcp.oxfordjournals.org/content/30/7/937</a>.</p>
+</div>
+<div id="ref-chikhi2013">
+<p>Chikhi, Rayan, and Paul Medvedev. 2013. “Informed and Automated K-Mer Size Selection for Genome Assembly.” <em>arXiv:1304.5665</em>, April. <a href="http://arxiv.org/abs/1304.5665" class="uri">http://arxiv.org/abs/1304.5665</a>.</p>
+</div>
+<div id="ref-christin2013">
+<p>Christin, Pascal Antoine, and Colin P. Osborne. 2013. “The Recurrent Assembly of C4 Photosynthesis, an Evolutionary Tale.” <em>Photosynthesis Research</em>, May, 1–13. <a href="http://doi.org/10.1007/s11120-013-9852-z">doi:10.1007/s11120-013-9852-z</a>.</p>
+</div>
+<div id="ref-christin2008">
+<p>Christin, Pascal Antoine, Guillaume Besnard, Emanuela Samaritani, Melvin R. Duvall, Trevor R. Hodkinson, Vincent Savolainen, and Nicolas Salamin. 2008. “Oligocene CO2 Decline Promoted C4 Photosynthesis in Grasses.” <em>Current Biology</em> 18 (1): 37–43. <a href="http://doi.org/10.1016/j.cub.2007.11.058">doi:10.1016/j.cub.2007.11.058</a>.</p>
+</div>
+<div id="ref-christin2011">
+<p>Christin, Pascal Antoine, Tammy L Sage, Erika J Edwards, R. Matthew Ogburn, Roxana Khoshravesh, and Rowan F Sage. 2011. “COMPLEX EVOLUTIONARY TRANSITIONS AND THE SIGNIFICANCE OF C3–C4 INTERMEDIATE FORMS OF PHOTOSYNTHESIS IN MOLLUGINACEAE.” <em>Evolution</em> 65 (3): 643–60. <a href="http://doi.org/10.1111/j.1558-5646.2010.01168.x">doi:10.1111/j.1558-5646.2010.01168.x</a>.</p>
+</div>
+<div id="ref-compeau2011">
+<p>Compeau, Phillip E. C., Pavel A. Pevzner, and Glenn Tesler. 2011. “How to Apply de Bruijn Graphs to Genome Assembly.” <em>Nature Biotechnology</em> 29 (11): 987–91. <a href="http://doi.org/10.1038/nbt.2023">doi:10.1038/nbt.2023</a>.</p>
+</div>
+<div id="ref-covshoff2012">
+<p>Covshoff, Sarah, and Julian M Hibberd. 2012. “Integrating C4 Photosynthesis into C3 Crops to Increase Yield Potential.” <em>Current Opinion in Biotechnology</em> 23 (2): 209–14. <a href="http://doi.org/10.1016/j.copbio.2011.12.011">doi:10.1016/j.copbio.2011.12.011</a>.</p>
+</div>
+<div id="ref-covshoff2013">
+<p>Covshoff, Sarah, Robert T. Furbank, Richard C. Leegood, and Julian M. Hibberd. 2013. “Leaf Rolling Allows Quantification of mRNA Abundance in Mesophyll Cells of Sorghum.” <em>Journal of Experimental Botany</em> 64 (3): 807–13. <a href="http://doi.org/10.1093/jxb/ers286">doi:10.1093/jxb/ers286</a>.</p>
+</div>
+<div id="ref-dengler1999">
+<p>Dengler, Nancy G., and Timothy Nelson. 1999. “Leaf Structure and Development in C4 Plants.” In <em>C4 Plant Biology</em>, edited by Timothy Nelson and Timothy Nelson, 133–72. San Diego: Academic Press.</p>
+</div>
+<div id="ref-earl2011">
+<p>Earl, D., K. Bradnam, J. St. John, A. Darling, D. Lin, J. Fass, H. O. K. Yu, et al. 2011. “Assemblathon 1: A Competitive Assessment of de Novo Short Read Assembly Methods.” <em>Genome Research</em> 21 (12): 2224–41. <a href="http://doi.org/10.1101/gr.126599.111">doi:10.1101/gr.126599.111</a>.</p>
+</div>
+<div id="ref-edgar2010">
+<p>Edgar, Robert C. 2010. “Search and Clustering Orders of Magnitude Faster Than BLAST.” <em>Bioinformatics</em> 26 (19): 2460–61. <a href="http://doi.org/10.1093/bioinformatics/btq461">doi:10.1093/bioinformatics/btq461</a>.</p>
+</div>
+<div id="ref-ehleringer1991">
+<p>Ehleringer, James R., Rowan F. Sage, Lawrence B. Flanagan, and Robert W. Pearcy. 1991. “Climate Change and the Evolution of C4 Photosynthesis.” <em>Trends in Ecology &amp; Evolution</em> 6 (3): 95–99. <a href="http://doi.org/10.1016/0169-5347(91)90183-X">doi:10.1016/0169-5347(91)90183-X</a>.</p>
+</div>
+<div id="ref-ellis1979">
+<p>Ellis, R.John. 1979. “The Most Abundant Protein in the World.” <em>Trends in Biochemical Sciences</em> 4 (11): 241–44. <a href="http://doi.org/10.1016/0968-0004(79)90212-3">doi:10.1016/0968-0004(79)90212-3</a>.</p>
+</div>
+<div id="ref-evenson2003">
+<p>Evenson, Robert Eugene, and Douglas Gollin. 2003. <em>Crop Variety Improvement and Its Effect on Productivity: The Impact of International Agricultural Research</em>. CABI.</p>
+</div>
+<div id="ref-fuchs2011">
+<p>Fuchs, Georg. 2011. “Alternative Pathways of Carbon Dioxide Fixation: Insights into the Early Evolution of Life?” <em>Annual Review of Microbiology</em> 65: 631–58. <a href="http://doi.org/10.1146/annurev-micro-090110-102801">doi:10.1146/annurev-micro-090110-102801</a>.</p>
+</div>
+<div id="ref-fukayama2003">
+<p>Fukayama, Hiroshi, Marshall Hatch, Tesshu Tamai, Hiroko Tsuchida, Sizue Sudoh, Robert Furbank, and Mitsue Miyao. 2003. “Activity Regulation and Physiological Impacts of Maize C4-Specific Phosphoenolpyruvate Carboxylase Overproduced in Transgenic Rice Plants.” <em>Photosynthesis Research</em> 77 (2): 227–39. <a href="http://doi.org/10.1023/A:1025861431886">doi:10.1023/A:1025861431886</a>.</p>
+</div>
+<div id="ref-furbank1987">
+<p>Furbank, Robert T., and Marshall D. Hatch. 1987. “Mechanism of C4 Photosynthesis the Size and Composition of the Inorganic Carbon Pool in Bundle Sheath Cells.” <em>Plant Physiology</em> 85 (4): 958–64. <a href="http://doi.org/10.1104/pp.85.4.958">doi:10.1104/pp.85.4.958</a>.</p>
+</div>
+<div id="ref-gonnella2012">
+<p>Gonnella, Giorgio, and Stefan Kurtz. 2012. “Readjoiner: A Fast and Memory Efficient String Graph-Based Sequence Assembler.” <em>BMC Bioinformatics</em> 13 (1): 82. <a href="http://doi.org/10.1186/1471-2105-13-82">doi:10.1186/1471-2105-13-82</a>.</p>
+</div>
+<div id="ref-gowik2011">
+<p>Gowik, Udo, and Peter Westhoff. 2011. “The Path from C3 to C4 Photosynthesis.” <em>Plant Physiol.</em> 155 (1): 56–63. <a href="http://doi.org/&lt;p&gt;10.1104/pp.110.165308&lt;/p&gt;">doi:&lt;p&gt;10.1104/pp.110.165308&lt;/p&gt;</a>.</p>
+</div>
+<div id="ref-gowik2004">
+<p>Gowik, Udo, Janet Burscheidt, Meryem Akyildiz, Ute Schlue, Maria Koczor, Monika Streubel, and Peter Westhoff. 2004. “Cis-Regulatory Elements for Mesophyll-Specific Gene Expression in the C4 Plant Flaveria Trinervia, the Promoter of the C4 Phosphoenolpyruvate Carboxylase Gene.” <em>The Plant Cell</em> 16 (5): 1077–90. <a href="http://doi.org/10.1105/tpc.019729">doi:10.1105/tpc.019729</a>.</p>
+</div>
+<div id="ref-grabherr2011">
+<p>Grabherr, Manfred G., Brian J. Haas, Moran Yassour, Joshua Z. Levin, Dawn A. Thompson, Ido Amit, Xian Adiconis, et al. 2011. “Full-Length Transcriptome Assembly from RNA-Seq Data Without a Reference Genome.” <em>Nature Biotechnology</em> 29 (7): 644–52. <a href="http://doi.org/10.1038/nbt.1883">doi:10.1038/nbt.1883</a>.</p>
+</div>
+<div id="ref-grassphylogenyworkinggroupii2012">
+<p>Grass Phylogeny Working Group II. 2012. “New Grass Phylogeny Resolves Deep Evolutionary Relationships and Discovers C4 Origins.” <em>New Phytologist</em> 193 (2): 304–12. <a href="http://doi.org/10.1111/j.1469-8137.2011.03972.x">doi:10.1111/j.1469-8137.2011.03972.x</a>.</p>
+</div>
+<div id="ref-gurevich2013">
+<p>Gurevich, Alexey, Vladislav Saveliev, Nikolay Vyahhi, and Glenn Tesler. 2013. “QUAST: Quality Assessment Tool for Genome Assemblies.” <em>Bioinformatics</em> 29 (8): 1072–75. <a href="http://doi.org/10.1093/bioinformatics/btt086">doi:10.1093/bioinformatics/btt086</a>.</p>
+</div>
+<div id="ref-hatch1966">
+<p>Hatch, M. D., and C. R. Slack. 1966. “Photosynthesis by Sugar-Cane Leaves.” <em>Biochemical Journal</em> 101 (1): 103–11. <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1270070/" class="uri">http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1270070/</a>.</p>
+</div>
+<div id="ref-hibberd2008">
+<p>Hibberd, Julian M, John E Sheehy, and Jane A Langdale. 2008. “Using C4 Photosynthesis to Increase the Yield of Rice-Rationale and Feasibility.” <em>Current Opinion in Plant Biology</em> 11 (2): 228–31. <a href="http://doi.org/10.1016/j.pbi.2007.11.002">doi:10.1016/j.pbi.2007.11.002</a>.</p>
+</div>
+<div id="ref-hibberd2010">
+<p>Hibberd, Julian M., and Sarah Covshoff. 2010. “The Regulation of Gene Expression Required for C4 Photosynthesis.” <em>Annual Review of Plant Biology</em> 61 (1): 181–207. <a href="http://doi.org/10.1146/annurev-arplant-042809-112238">doi:10.1146/annurev-arplant-042809-112238</a>.</p>
+</div>
+<div id="ref-holland2006">
+<p>Holland, Heinrich D. 2006. “The Oxygenation of the Atmosphere and Oceans.” <em>Philosophical Transactions of the Royal Society B: Biological Sciences</em> 361 (1470): 903–15. <a href="http://doi.org/10.1098/rstb.2006.1838">doi:10.1098/rstb.2006.1838</a>.</p>
+</div>
+<div id="ref-hoogeveen1991">
+<p>Hoogeveen, J.A. 1991. “Analysis of Christofides’ Heuristic: Some Paths Are More Difficult Than Cycles.” <em>Operations Research Letters</em> 10 (5): 291–95. <a href="http://doi.org/10.1016/0167-6377(91)90016-I">doi:10.1016/0167-6377(91)90016-I</a>.</p>
+</div>
+<div id="ref-idury1995">
+<p>Idury, R M, and M S Waterman. 1995. “A New Algorithm for DNA Sequence Assembly.” <em>Journal of Computational Biology: A Journal of Computational Molecular Cell Biology</em> 2 (2): 291–306.</p>
+</div>
+<div id="ref-janiya1984">
+<p>Janiya, J. D., and K. Moody. 1984. “Use of Azolla to Suppress Weeds in Transplanted Rice.” <em>Tropical Pest Management</em> 30 (1): 1–6. <a href="http://doi.org/10.1080/09670878409370842">doi:10.1080/09670878409370842</a>.</p>
+</div>
+<div id="ref-jefferson1987">
+<p>Jefferson, R A, T A Kavanagh, and M W Bevan. 1987. “GUS Fusions: Beta-Glucuronidase as a Sensitive and Versatile Gene Fusion Marker in Higher Plants.” <em>The EMBO Journal</em> 6 (13): 3901–7. <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC553867/" class="uri">http://www.ncbi.nlm.nih.gov/pmc/articles/PMC553867/</a>.</p>
+</div>
+<div id="ref-jones1988">
+<p>Jones, M. B. 1988. “Photosynthetic Responses of C3 and C4 Wetland Species in a Tropical Swamp.” <em>Journal of Ecology</em> 76 (1): 253–62. <a href="http://doi.org/10.2307/2260467">doi:10.2307/2260467</a>.</p>
+</div>
+<div id="ref-jones2002">
+<p>Jones, M. B., and S. W. Humphries. 2002. “Impacts of the C4 Sedge Cyperus Papyrus L. on Carbon and Water Fluxes in an African Wetland.” <em>Hydrobiologia</em> 488 (1-3): 107–13. <a href="http://doi.org/10.1023/A:1023370329097">doi:10.1023/A:1023370329097</a>.</p>
+</div>
+<div id="ref-jones1997">
+<p>Jones, Michael B., and Francis M. Muthuri. 1997. “Standing Biomass and Carbon Distribution in a Papyrus ( Cyperus Papyrus L.) Swamp on Lake Naivasha, Kenya.” <em>Journal of Tropical Ecology</em> 13 (03): 347–56. <a href="http://doi.org/10.1017/S0266467400010555">doi:10.1017/S0266467400010555</a>.</p>
+</div>
+<div id="ref-jordan1981">
+<p>Jordan, Douglas B., and William L. Ogren. 1981. “Species Variation in the Specificity of Ribulose Biphosphate Carboxylase/oxygenase.” <em>Nature</em> 291 (5815): 513–15. <a href="http://doi.org/10.1038/291513a0">doi:10.1038/291513a0</a>.</p>
+</div>
+<div id="ref-kajala2011">
+<p>Kajala, Kaisa, Sarah Covshoff, Shanta Karki, Helen Woodfield, Ben J. Tolley, Mary Jaqueline A. Dionora, Reychelle T. Mogul, et al. 2011. “Strategies for Engineering a Two-Celled C4 Photosynthetic Pathway into Rice.” <em>Journal of Experimental Botany</em> 62 (9): 3001–10. <a href="http://doi.org/10.1093/jxb/err022">doi:10.1093/jxb/err022</a>.</p>
+</div>
+<div id="ref-kasting1987">
+<p>Kasting, James F. 1987. “Theoretical Constraints on Oxygen and Carbon Dioxide Concentrations in the Precambrian Atmosphere.” <em>Precambrian Research</em> 34 (3–4): 205–29. <a href="http://doi.org/10.1016/0301-9268(87)90001-5">doi:10.1016/0301-9268(87)90001-5</a>.</p>
+</div>
+<div id="ref-kausch2001">
+<p>Kausch, Albert P., T. Page Owen, Susan J. Zachwieja, Adam R. Flynn, and Jen Sheen. 2001. “Mesophyll-Specific, Light and Metabolic Regulation of the C4 PPCZm1 Promoter in Transgenic Maize.” <em>Plant Molecular Biology</em> 45 (1): 1–15. <a href="http://doi.org/10.1023/A:1006487326533">doi:10.1023/A:1006487326533</a>.</p>
+</div>
+<div id="ref-kawashima1970">
+<p>Kawashima, N, and S G Wildman. 1970. “Fraction I Protein.” <em>Annual Review of Plant Physiology</em> 21 (1): 325–58. <a href="http://doi.org/10.1146/annurev.pp.21.060170.001545">doi:10.1146/annurev.pp.21.060170.001545</a>.</p>
+</div>
+<div id="ref-kelly1976">
+<p>Kelly, G.J., and E. Latzko. 1976. “Inhibition of Spinach-Leaf Phosphofructokinase by 2-Phosphoglycollate.” <em>FEBS Letters</em> 68 (1): 55–58. <a href="http://doi.org/10.1016/0014-5793(76)80403-6">doi:10.1016/0014-5793(76)80403-6</a>.</p>
+</div>
+<div id="ref-kim1988">
+<p>Kim, J. S. 1988. “Effect of Standing Water and Cultivation on Emergence of Echinochloa Glabrescens.” <em>Korean Journal of Weed Science</em> v. 8(1) p. 28-32 (April). <a href="http://agris.fao.org/agris-search/search/display.do?f=1990/KR/KR90005.xml;KR8935823" class="uri">http://agris.fao.org/agris-search/search/display.do?f=1990/KR/KR90005.xml;KR8935823</a>.</p>
+</div>
+<div id="ref-kim1987">
+<p>Kim, J. S., and B. L. Mercado. 1987. “Viability and Emergence of Buried Seeds of Echinochloa Glabrescens, Monochoria Vaginalis and Cyperus Difformis.” In, 469–76. Asian Pacific Weed Science Society.</p>
+</div>
+<div id="ref-kim1980">
+<p>Kim, S. C., and K. Moody. 1980. “Types of Weed Community in Transplanted Lowland Rice and Relationship Between Yield and Weed Weight in Weed Communities.” <em>Journal of the Korean Society of Crop Science</em> 25 (3): 1–8.</p>
+</div>
+<div id="ref-kim1989">
+<p>Kim, S. C., and Keith Moody. 1989. “Germination and Seedling Development of Rice and Echinochloa Species.” <em>Korean Journal of Weed Science</em> v. 9(2) p. 108-115 (June). <a href="http://agris.fao.org/agris-search/search/display.do?f=1990/KR/KR90007.xml;KR9036124" class="uri">http://agris.fao.org/agris-search/search/display.do?f=1990/KR/KR90007.xml;KR9036124</a>.</p>
+</div>
+<div id="ref-koteyeva2011">
+<p>Koteyeva, Nuria K., Elena V. Voznesenskaya, Eric H. Roalson, and Gerald E. Edwards. 2011. “Diversity in Forms of C4 in the Genus Cleome (Cleomaceae).” <em>Annals of Botany</em> 107 (2): 269–83. <a href="http://doi.org/10.1093/aob/mcq239">doi:10.1093/aob/mcq239</a>.</p>
+</div>
+<div id="ref-lam1996">
+<p>Lam, H.-M., K. T. Coschigano, I. C. Oliveira, R. Melo-Oliveira, and G. M. Coruzzi. 1996. “The Molecular-Genetics of Nitrogen Assimilation into Amino Acids in Higher Plants.” <em>Annual Review of Plant Physiology and Plant Molecular Biology</em> 47 (1): 569–93. <a href="http://doi.org/10.1146/annurev.arplant.47.1.569">doi:10.1146/annurev.arplant.47.1.569</a>.</p>
+</div>
+<div id="ref-langdale1988">
+<p>Langdale, J A, I Zelitch, E Miller, and T Nelson. 1988. “Cell Position and Light Influence C4 Versus C3 Patterns of Photosynthetic Gene Expression in Maize.” <em>The EMBO Journal</em> 7 (12): 3643–51. <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC454936/" class="uri">http://www.ncbi.nlm.nih.gov/pmc/articles/PMC454936/</a>.</p>
+</div>
+<div id="ref-langdale2011">
+<p>Langdale, Jane A. 2011. “C4 Cycles: Past, Present, and Future Research on C4 Photosynthesis.” <em>The Plant Cell</em>, November. <a href="http://doi.org/10.1105/tpc.111.092098">doi:10.1105/tpc.111.092098</a>.</p>
+</div>
+<div id="ref-langdale1991">
+<p>Langdale, Jane A., and Timothy Nelson. 1991. “Spatial Regulation of Photosynthetic Development in C4 Plants.” <em>Trends in Genetics</em> 7 (6): 191–96. <a href="http://doi.org/10.1016/0168-9525(91)90435-S">doi:10.1016/0168-9525(91)90435-S</a>.</p>
+</div>
+<div id="ref-le2013">
+<p>Le, Hai-Son, Marcel H. Schulz, Brenna M. McCauley, Veronica F. Hinman, and Ziv Bar-Joseph. 2013. “Probabilistic Error Correction for RNA Sequencing.” <em>Nucleic Acids Research</em> 41 (10): e109. <a href="http://doi.org/10.1093/nar/gkt215">doi:10.1093/nar/gkt215</a>.</p>
+</div>
+<div id="ref-li2010-b">
+<p>Li, Pinghua, Lalit Ponnala, Neeru Gandotra, Lin Wang, Yaqing Si, S Lori Tausta, Tesfamichael H Kebrom, et al. 2010. “The Developmental Dynamics of the Maize Leaf Transcriptome.” <em>Nat Genet</em> 42 (12): 1060–67. <a href="http://doi.org/10.1038/ng.703">doi:10.1038/ng.703</a>.</p>
+</div>
+<div id="ref-li2006">
+<p>Li, Weizhong, and Adam Godzik. 2006. “Cd-Hit: A Fast Program for Clustering and Comparing Large Sets of Protein or Nucleotide Sequences.” <em>Bioinformatics</em> 22 (13): 1658–59. <a href="http://doi.org/10.1093/bioinformatics/btl158">doi:10.1093/bioinformatics/btl158</a>.</p>
+</div>
+<div id="ref-liu2013">
+<p>Liu, Yongchao, Jan Schröder, and Bertil Schmidt. 2013. “Musket: A Multistage K-Mer Spectrum-Based Error Corrector for Illumina Sequence Data.” <em>Bioinformatics</em> 29 (3): 308–15. <a href="http://doi.org/10.1093/bioinformatics/bts690">doi:10.1093/bioinformatics/bts690</a>.</p>
+</div>
+<div id="ref-lloyd1994">
+<p>Lloyd, Jon, and Graham D. Farquhar. 1994. “13C Discrimination During CO2 Assimilation by the Terrestrial Biosphere.” <em>Oecologia</em> 99 (3-4): 201–15. <a href="http://doi.org/10.1007/BF00627732">doi:10.1007/BF00627732</a>.</p>
+</div>
+<div id="ref-lohse2012">
+<p>Lohse, Marc, Anthony M. Bolger, Axel Nagel, Alisdair R. Fernie, John E. Lunn, Mark Stitt, and Bjorn Usadel. 2012. “RobiNA: A User-Friendly, Integrated Software Solution for RNA-Seq-based Transcriptomics.” <em>Nucleic Acids Research</em> 40 (Web Server issue): W622–27. <a href="http://doi.org/10.1093/nar/gks540">doi:10.1093/nar/gks540</a>.</p>
+</div>
+<div id="ref-majeran2009">
+<p>Majeran, Wojciech, and Klaas J. van Wijk. 2009. “Cell-Type-Specific Differentiation of Chloroplasts in C4 Plants.” <em>Trends in Plant Science</em> 14 (2): 100–109. <a href="http://doi.org/10.1016/j.tplants.2008.11.006">doi:10.1016/j.tplants.2008.11.006</a>.</p>
+</div>
+<div id="ref-majeran2005">
+<p>Majeran, Wojciech, Yang Cai, Qi Sun, and Klaas J. van Wijk. 2005. “Functional Differentiation of Bundle Sheath and Mesophyll Maize Chloroplasts Determined by Comparative Proteomics.” <em>The Plant Cell</em> 17 (11): 3111–40. <a href="http://doi.org/10.1105/tpc.105.035519">doi:10.1105/tpc.105.035519</a>.</p>
+</div>
+<div id="ref-majeran2010">
+<p>Majeran, Wojciech, Giulia Friso, Lalit Ponnala, Brian Connolly, Mingshu Huang, Edwin Reidel, Cankui Zhang, et al. 2010. “Structural and Metabolic Transitions of C4 Leaf Development and Differentiation Defined by Microscopy and Quantitative Proteomics in Maize.” <em>The Plant Cell</em> 22 (11): 3509–42. <a href="http://doi.org/10.1105/tpc.110.079764">doi:10.1105/tpc.110.079764</a>.</p>
+</div>
+<div id="ref-majeran2008">
+<p>Majeran, Wojciech, Boris Zybailov, A. Jimmy Ytterberg, Jason Dunsmore, Qi Sun, and Klaas J. van Wijk. 2008. “Consequences of C4 Differentiation for Chloroplast Membrane Proteomes in Maize Mesophyll and Bundle Sheath Cells.” <em>Molecular &amp; Cellular Proteomics</em> 7 (9): 1609–38. <a href="http://doi.org/10.1074/mcp.M800016-MCP200">doi:10.1074/mcp.M800016-MCP200</a>.</p>
+</div>
+<div id="ref-masumoto2010">
+<p>Masumoto, Chisato, Shin-Ichi Miyazawa, Hiroshi Ohkawa, Takuya Fukuda, Yojiro Taniguchi, Seiji Murayama, Miyako Kusano, Kazuki Saito, Hiroshi Fukayama, and Mitsue Miyao. 2010. “Phosphoenolpyruvate Carboxylase Intrinsically Located in the Chloroplast of Rice Plays a Crucial Role in Ammonium Assimilation.” <em>Proceedings of the National Academy of Sciences</em> 107 (11): 5226–31. <a href="http://doi.org/10.1073/pnas.0913127107">doi:10.1073/pnas.0913127107</a>.</p>
+</div>
+<div id="ref-mckown2007">
+<p>McKown, Athena D., and Nancy G. Dengler. 2007. “Key Innovations in the Evolution of Kranz Anatomy and C4 Vein Pattern in Flaveria (Asteraceae).” <em>Am. J. Bot.</em> 94 (3): 382–99. <a href="http://doi.org/&lt;p&gt;10.3732/ajb.94.3.382&lt;/p&gt;">doi:&lt;p&gt;10.3732/ajb.94.3.382&lt;/p&gt;</a>.</p>
+</div>
+<div id="ref-medvedev2011">
+<p>Medvedev, Paul, Son Pham, Mark Chaisson, Glenn Tesler, and Pavel Pevzner. 2011. “Paired de Bruijn Graphs: A Novel Approach for Incorporating Mate Pair Information into Genome Assemblers.” In <em>Research in Computational Molecular Biology</em>, edited by Vineet Bafna and S. Cenk Sahinalp, 238–51. Lecture Notes in Computer Science 6577. Springer Berlin Heidelberg. <a href="http://link.springer.com/chapter/10.1007/978-3-642-20036-6_22" class="uri">http://link.springer.com/chapter/10.1007/978-3-642-20036-6_22</a>.</p>
+</div>
+<div id="ref-mitchell2006">
+<p>Mitchell, P. L, and J. E Sheehy. 2006. “Supercharging Rice Photosynthesis to Increase Yield.” <em>New Phytologist</em> 171 (4): 688–93. <a href="http://doi.org/10.1111/j.1469-8137.2006.01855.x">doi:10.1111/j.1469-8137.2006.01855.x</a>.</p>
+</div>
+<div id="ref-sheehy2008">
+<p>Mitchell, P.L., and J. E. Sheehy. 2008. “The Case for c<span class="math inline">_{\textrm{4}}</span> Rice.” In <em>Charting New Pathways to C4 Rice</em>, edited by J. E. Sheehy. World Scientific.</p>
+</div>
+<div id="ref-miyao2011">
+<p>Miyao, Mitsue, Chisato Masumoto, Shin-Ichi Miyazawa, and Hiroshi Fukayama. 2011. “Lessons from Engineering a Single-Cell C4 Photosynthetic Pathway into Rice.” <em>Journal of Experimental Botany</em> 62 (9): 3021–29. <a href="http://doi.org/10.1093/jxb/err023">doi:10.1093/jxb/err023</a>.</p>
+</div>
+<div id="ref-monson2003">
+<p>Monson, Russell K. 2003. “Gene Duplication, Neofunctionalization, and the Evolution of C4 Photosynthesis.” <em>International Journal of Plant Sciences</em> 164 (S3): S43–54. <a href="http://doi.org/10.1086/368400">doi:10.1086/368400</a>.</p>
+</div>
+<div id="ref-monteith1978">
+<p>Monteith, J. L. 1978. “Reassessment of Maximum Growth Rates for C3 and C4 Crops.” <em>Experimental Agriculture</em> 14 (01): 1–5. <a href="http://doi.org/10.1017/S0014479700008255">doi:10.1017/S0014479700008255</a>.</p>
+</div>
+<div id="ref-morison2000">
+<p>Morison, J. I. L., M. T. F. Piedade, E. Müller, S. P. Long, W. J. Junk, and M. B. Jones. 2000. “Very High Productivity of the C4 Aquatic Grass Echinochloa Polystachya in the Amazon Floodplain Confirmed by Net Ecosystem CO2 Flux Measurements.” <em>Oecologia</em> 125 (3): 400–411. <a href="http://doi.org/10.1007/s004420000464">doi:10.1007/s004420000464</a>.</p>
+</div>
+<div id="ref-myers2005">
+<p>Myers, E. W. 2005. “The Fragment Assembly String Graph.” <em>Bioinformatics</em> 21 (Suppl 2): ii79–i85. <a href="http://doi.org/10.1093/bioinformatics/bti1114">doi:10.1093/bioinformatics/bti1114</a>.</p>
+</div>
+<div id="ref-nimmo2003">
+<p>Nimmo, Hugh G. 2003. “Control of the Phosphorylation of Phosphoenolpyruvate Carboxylase in Higher Plants.” <em>Archives of Biochemistry and Biophysics</em> 414 (2): 189–96. <a href="http://doi.org/10.1016/S0003-9861(03)00115-2">doi:10.1016/S0003-9861(03)00115-2</a>.</p>
+</div>
+<div id="ref-nisbet2007">
+<p>Nisbet, E. G., N. V. Grassineau, C. J. Howe, P. I. Abell, M. Regelous, and R. E. R. Nisbet. 2007. “The Age of Rubisco: The Evolution of Oxygenic Photosynthesis.” <em>Geobiology</em> 5 (4): 311–35. <a href="http://doi.org/10.1111/j.1472-4669.2007.00127.x">doi:10.1111/j.1472-4669.2007.00127.x</a>.</p>
+</div>
+<div id="ref-osborne2006">
+<p>Osborne, Colin P., and David J. Beerling. 2006. “Nature’s Green Revolution: The Remarkable Evolutionary Rise of C4 Plants.” <em>Philosophical Transactions of the Royal Society B: Biological Sciences</em> 361 (1465): 173–94. <a href="http://doi.org/10.1098/rstb.2005.1737">doi:10.1098/rstb.2005.1737</a>.</p>
+</div>
+<div id="ref-pagani2005">
+<p>Pagani, Mark, James C. Zachos, Katherine H. Freeman, Brett Tipple, and Stephen Bohaty. 2005. “Marked Decline in Atmospheric Carbon Dioxide Concentrations During the Paleogene.” <em>Science</em> 309 (5734): 600–603. <a href="http://doi.org/10.1126/science.1110063">doi:10.1126/science.1110063</a>.</p>
+</div>
+<div id="ref-patel2004">
+<p>Patel, Minesh, Amy C. Corey, Li-Ping Yin, Shahjahan Ali, William C. Taylor, and James O. Berry. 2004. “Untranslated Regions from C4 Amaranth AhRbcS1 mRNAs Confer Translational Enhancement and Preferential Bundle Sheath Cell Expression in Transgenic C4 Flaveria Bidentis.” <em>Plant Physiology</em> 136 (3): 3550–61. <a href="http://doi.org/10.1104/pp.104.051508">doi:10.1104/pp.104.051508</a>.</p>
+</div>
+<div id="ref-peterhansel2010">
+<p>Peterhansel, Christoph, Ina Horst, Markus Niessen, Christian Blume, Rashad Kebeish, Sophia Kürkcüoglu, and Fritz Kreuzaler. 2010. “Photorespiration.” <em>The Arabidopsis Book</em>, January, e0130. <a href="http://doi.org/10.1199/tab.0130">doi:10.1199/tab.0130</a>.</p>
+</div>
+<div id="ref-pevzner1989">
+<p>Pevzner, Pavel A. 1989. “1-Tuple DNA Sequencing: Computer Analysis.” <em>Journal of Biomolecular Structure and Dynamics</em> 7 (1): 63–73. <a href="http://doi.org/10.1080/07391102.1989.10507752">doi:10.1080/07391102.1989.10507752</a>.</p>
+</div>
+<div id="ref-pevzner2001">
+<p>Pevzner, Pavel A., Haixu Tang, and Michael S. Waterman. 2001. “An Eulerian Path Approach to DNA Fragment Assembly.” <em>Proceedings of the National Academy of Sciences</em> 98 (17): 9748–53. <a href="http://doi.org/10.1073/pnas.171285098">doi:10.1073/pnas.171285098</a>.</p>
+</div>
+<div id="ref-pham2012">
+<p>Pham, Son K., Dmitry Antipov, Alexander Sirotkin, Glenn Tesler, Pavel A. Pevzner, and Max A. Alekseyev. 2012. “Pathset Graphs: A Novel Approach for Comprehensive Utilization of Paired Reads in Genome Assembly.” In <em>Research in Computational Molecular Biology</em>, edited by Benny Chor, 200–212. Lecture Notes in Computer Science 7262. Springer Berlin Heidelberg. <a href="http://link.springer.com/chapter/10.1007/978-3-642-29627-7_21" class="uri">http://link.springer.com/chapter/10.1007/978-3-642-29627-7_21</a>.</p>
+</div>
+<div id="ref-phillippy2008">
+<p>Phillippy, Adam, Michael Schatz, and Mihai Pop. 2008. “Genome Assembly Forensics: Finding the Elusive Mis-Assembly.” <em>Genome Biology</em> 9 (3): R55. <a href="http://doi.org/10.1186/gb-2008-9-3-r55">doi:10.1186/gb-2008-9-3-r55</a>.</p>
+</div>
+<div id="ref-piedade1991">
+<p>Piedade, M. T. F., W. J. Junk, and S. P. Long. 1991. “The Productivity of the c_4 Grass Echinochloa Polystachya on the Amazon Floodplain.” <em>Ecology</em> 72 (4): 1456–63. <a href="http://doi.org/10.2307/1941118">doi:10.2307/1941118</a>.</p>
+</div>
+<div id="ref-piedade1994">
+<p>Piedade, M. T. F., S. P. Long, and W. J. Junk. 1994. “Leaf and Canopy Photosynthetic CO2 Uptake of a Stand of Echinochloa Polystachya on the Central Amazon Floodplain.” <em>Oecologia</em> 97 (2): 193–201. <a href="http://doi.org/10.1007/BF00323149">doi:10.1007/BF00323149</a>.</p>
+</div>
+<div id="ref-pop2008">
+<p>Pop, Mihai, and Steven L. Salzberg. 2008. “Bioinformatics Challenges of New Sequencing Technology.” <em>Trends in Genetics</em> 24 (3): 142–49. <a href="http://doi.org/10.1016/j.tig.2007.12.006">doi:10.1016/j.tig.2007.12.006</a>.</p>
+</div>
+<div id="ref-rao1992">
+<p>Rao, A. N., and K. Moody. 1992. “Competition Between Echinochloa Glabrescens and Rice (Oryza Sativa).” <em>Tropical Pest Management</em> 38 (1): 25–29. <a href="http://doi.org/10.1080/09670879209371640">doi:10.1080/09670879209371640</a>.</p>
+</div>
+<div id="ref-raven2013">
+<p>Raven, John A. 2013. “Rubisco: Still the Most Abundant Protein of Earth?” <em>New Phytologist</em> 198 (1): 1–3. <a href="http://doi.org/10.1111/nph.12197">doi:10.1111/nph.12197</a>.</p>
+</div>
+<div id="ref-robertson2010">
+<p>Robertson, Gordon, Jacqueline Schein, Readman Chiu, Richard Corbett, Matthew Field, Shaun D Jackman, Karen Mungall, et al. 2010. “De Novo Assembly and Analysis of RNA-seq Data.” <em>Nat Meth</em> 7 (11): 909–12. <a href="http://doi.org/10.1038/nmeth.1517">doi:10.1038/nmeth.1517</a>.</p>
+</div>
+<div id="ref-sage2011">
+<p>Sage, Rowan F., and Xin-Guang Zhu. 2011. “Exploiting the Engine of C4 Photosynthesis.” <em>Journal of Experimental Botany</em> 62 (9): 2989–3000. <a href="http://doi.org/10.1093/jxb/err179">doi:10.1093/jxb/err179</a>.</p>
+</div>
+<div id="ref-sage2011-b">
+<p>Sage, Rowan F., Pascal Antoine Christin, and Erika J. Edwards. 2011. “The C4 Plant Lineages of Planet Earth.” <em>Journal of Experimental Botany</em> 62 (9): 3155–69. <a href="http://doi.org/10.1093/jxb/err048">doi:10.1093/jxb/err048</a>.</p>
+</div>
+<div id="ref-sawers2007">
+<p>Sawers, Ruairidh JH, Peng Liu, Katya Anufrikova, JT Gene Hwang, and Thomas P. Brutnell. 2007. “A Multi-Treatment Experimental System to Examine Photosynthetic Differentiation in the Maize Leaf.” <em>BMC Genomics</em> 8 (1): 12. <a href="http://doi.org/10.1186/1471-2164-8-12">doi:10.1186/1471-2164-8-12</a>.</p>
+</div>
+<div id="ref-schmieder2011">
+<p>Schmieder, Robert, and Robert Edwards. 2011. “Quality Control and Preprocessing of Metagenomic Datasets.” <em>Bioinformatics</em> 27 (6): 863–64. <a href="http://doi.org/10.1093/bioinformatics/btr026">doi:10.1093/bioinformatics/btr026</a>.</p>
+</div>
+<div id="ref-schulz2012">
+<p>Schulz, Marcel H., Daniel R. Zerbino, Martin Vingron, and Ewan Birney. 2012. “Oases: Robust de Novo RNA-seq Assembly Across the Dynamic Range of Expression Levels.” <em>Bioinformatics</em> 28 (8): 1086–92. <a href="http://doi.org/10.1093/bioinformatics/bts094">doi:10.1093/bioinformatics/bts094</a>.</p>
+</div>
+<div id="ref-sharkey1988">
+<p>Sharkey, Thomas D. 1988. “Estimating the Rate of Photorespiration in Leaves.” <em>Physiologia Plantarum</em> 73 (1): 147–52. <a href="http://doi.org/10.1111/j.1399-3054.1988.tb09205.x">doi:10.1111/j.1399-3054.1988.tb09205.x</a>.</p>
+</div>
+<div id="ref-sheehy2007">
+<p>Sheehy, J. E., A. B. Ferrer, P. L. Mitchell, A. Elmido-Mabilangan, P. Pablico, and M. J. A. Dionora. 2007. “How the Rice Crop Works and Why It Needs a New Engine.” <a href="http://agris.fao.org/agris-search/search/display.do?f=2008/QR/QR0804.xml;QR2008000002" class="uri">http://agris.fao.org/agris-search/search/display.do?f=2008/QR/QR0804.xml;QR2008000002</a>.</p>
+</div>
+<div id="ref-simpson2010">
+<p>Simpson, Jared T., and Richard Durbin. 2010. “Efficient Construction of an Assembly String Graph Using the FM-index.” <em>Bioinformatics</em> 26 (12): i367–73. <a href="http://doi.org/10.1093/bioinformatics/btq217">doi:10.1093/bioinformatics/btq217</a>.</p>
+</div>
+<div id="ref-simpson2011">
+<p>———. 2011. “Efficient de Novo Assembly of Large Genomes Using Compressed Data Structures.” <em>Genome Research</em>, December. <a href="http://doi.org/10.1101/gr.126953.111">doi:10.1101/gr.126953.111</a>.</p>
+</div>
+<div id="ref-simpson2009">
+<p>Simpson, Jared T., Kim Wong, Shaun D. Jackman, Jacqueline E. Schein, Steven J. M. Jones, and İnanç Birol. 2009. “ABySS: A Parallel Assembler for Short Read Sequence Data.” <em>Genome Research</em> 19 (6): 1117–23. <a href="http://doi.org/10.1101/gr.089532.108">doi:10.1101/gr.089532.108</a>.</p>
+</div>
+<div id="ref-stein2010">
+<p>Stein, Lincoln D. 2010. “The Case for Cloud Computing in Genome Informatics.” <em>Genome Biology</em> 11 (5): 207. <a href="http://doi.org/10.1186/gb-2010-11-5-207">doi:10.1186/gb-2010-11-5-207</a>.</p>
+</div>
+<div id="ref-taniguchi2008">
+<p>Taniguchi, Yojiro, Hiroshi Ohkawa, Chisato Masumoto, Takuya Fukuda, Tesshu Tamai, Kwanghong Lee, Sizue Sudoh, et al. 2008. “Overproduction of C4 Photosynthetic Enzymes in Transgenic Rice Plants: An Approach to Introduce the C4-Like Photosynthetic Pathway into Rice.” <em>Journal of Experimental Botany</em> 59 (7): 1799–1809. <a href="http://doi.org/10.1093/jxb/ern016">doi:10.1093/jxb/ern016</a>.</p>
+</div>
+<div id="ref-undesa2010">
+<p>UNDESA. 2010. “World Population Prospects, the 2010 Revision. United Nations, Department of Economic and Social Affairs: Population Division, Population Estimates and Projections Section.” <a href="http://esa.un.org/unpd/wpp/unpp/panel\_population.htm" class="uri">http://esa.un.org/unpd/wpp/unpp/panel\_population.htm</a>.</p>
+</div>
+<div id="ref-vicentini2008">
+<p>Vicentini, Alberto, Janet C Barber, Sandra S Aliscioni, Liliana M Giussani, and Elizabeth A Kellogg. 2008. “The Age of the Grasses and Clusters of Origins of C4 Photosynthesis.” <em>Global Change Biology</em> 14 (12): 2963–77. <a href="http://doi.org/10.1111/j.1365-2486.2008.01688.x">doi:10.1111/j.1365-2486.2008.01688.x</a>.</p>
+</div>
+<div id="ref-wang1993">
+<p>Wang, J. L., R. Turgeon, J. P. Carr, and J. O. Berry. 1993. “Carbon Sink-to-Source Transition Is Coordinated with Establishment of Cell-Specific Gene Expression in a C4 Plant.” <em>The Plant Cell Online</em> 5 (3): 289–96. <a href="http://doi.org/10.1105/tpc.5.3.289">doi:10.1105/tpc.5.3.289</a>.</p>
+</div>
+<div id="ref-wang2013">
+<p>Wang, Peng, Steven Kelly, Jim P Fouracre, and Jane A Langdale. 2013. “Genome-Wide Transcript Analysis of Early Maize Leaf Development Reveals Gene Cohorts Associated with the Differentiation of C4 Kranz Anatomy.” <em>The Plant Journal</em>, n/a–/a. <a href="http://doi.org/10.1111/tpj.12229">doi:10.1111/tpj.12229</a>.</p>
+</div>
+<div id="ref-watanabe1986">
+<p>Watanabe, I. 1986. “Nitrogen Fixation by Non-Legumes in Tropical Agriculture with Special Reference to Wetland Rice.” <em>Plant and Soil</em> 90 (1-3): 343–57. <a href="http://doi.org/10.1007/BF02277407">doi:10.1007/BF02277407</a>.</p>
+</div>
+<div id="ref-williams2012">
+<p>Williams, Ben. 2012. “Characterising the Evolutionary Pathways Generating C4 Photosynthesis.” In <em>Identifying Mechanisms Underlying the Coordinated Evolution of Multiple C4 Genes</em>.</p>
+</div>
+<div id="ref-zerbino2008">
+<p>Zerbino, Daniel R., and Ewan Birney. 2008. “Velvet: Algorithms for de Novo Short Read Assembly Using de Bruijn Graphs.” <em>Genome Research</em> 18 (5): 821–29. <a href="http://doi.org/10.1101/gr.074492.107">doi:10.1101/gr.074492.107</a>.</p>
+</div>
+<div id="ref-zhongyu2000">
+<p>ZhongYu, Ma, and Wu YongChang. 2000. “Contribution of Rice Genetic Improvement to Yield Increase in China.” <em>Chinese Journal of Rice Science</em> 14 (2): 112–14. <a href="http://www.cabdirect.org/abstracts/20001614389.html" class="uri">http://www.cabdirect.org/abstracts/20001614389.html</a>.</p>
+</div>
+</div>
+</div>
+</body>
+</html>
