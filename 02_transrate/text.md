@@ -103,15 +103,15 @@ propose that each of
 these four statements can approximated through analysis of the reads
 that map to the assembled contigs.
 
-$s(C_{\text{nuc}})$ corresponds to property 1, this score measures the
+$s(C_{nuc})$ corresponds to property 1, this score measures the
 extent to which the nucleotides in the mapped reads are the same as
-those in the assembled contig. $s(C_{\text{cov}})$ corresponds to
+those in the assembled contig. $s(C_{cov})$ corresponds to
 property 2, this score measures the proportion of nucleotides in the
 contig that have zero coverage and thus have no supporting read data.
-$s(C_{\text{ord}})$ corresponds to property 3, this score measures the
+$s(C_{ord})$ corresponds to property 3, this score measures the
 extent to which the order of the bases in contig are correct by
 analyzing the pairing information in the mapped reads.
-$s(C_{\text{seg}})$ corresponds to property 4, this score measures the
+$s(C_{seg})$ corresponds to property 4, this score measures the
 probability that the coverage depth of the transcript is univariate,
 i.e. that it represents an assembly of a single transcript and not a
 hybrid/chimeric assembly of multiple transcripts expressed at different
@@ -125,7 +125,7 @@ different algorithms from multiple different species (Figure 3A). For
 each contig level metric the distributions of observed scores was
 broadly similar irrespective of species or assembly algorithm (Figure
 3A). One notable exception to this observation is that the distribution
-of $s(C_{\text{cov}})$ observed for rice and mouse contigs generated
+of $s(C_{cov})$ observed for rice and mouse contigs generated
 using SOAPdenovo-Trans was markedly different to that observed for Oases
 and Trinity for the same species. This reveals that the contigs
 generated using SOAPdenovo-Trans on this rice data contained fewer
@@ -133,14 +133,14 @@ regions that had zero coverage after read mapping.
 
 ![The *TransRate* workflow. (1) *TransRate* takes as input one or more *de novo* transcriptome assemblies and the paired-end reads used to generate them. (2) The reads are aligned to the contigs. (3) Multi-mapping reads are assigned to contigs based on the posterior probability that each contig was the true origin. (4) The alignments are evaluated using four independent score components. (5) The four score components are integrated to generate the *TransRate* contig score. (6) The *TransRate* assembly score is calculated from analysis of all contig scores](figures/transrate_workflow.png) {#fig:transrate_workflow}
 
-![Distribution and interrelationship of contig score components. (A) Distribution of contig score components in ten different assemblies spanning four species and three different assemblers. $s\left( C_{\text{nuc}} \right)\ $is the fraction of nucleotides in a contig whose sequence identity agrees with the aligned reads. $s\left( C_{\text{cov}} \right)$ is the fraction of nucleotides in a contig that have one or more mapped reads. $s\left( C_{\text{ord}} \right)$ is the fraction of reads that map to the contig in the correct orientation. $s(C_{\text{seg}})$ is the probability that the read coverage along the length of the contig is best explained by a single Dirichlet distribution, as opposed to two or more distributions. (B) The Spearman’s rank correlation coefficient between the contig score components, averaged across all species and assemblers.](figures/transrate_contig_score_component_distributions.png) {#fig:transrate_contig_score_components}
+![Distribution and interrelationship of contig score components. (A) Distribution of contig score components in ten different assemblies spanning four species and three different assemblers. $s\left( C_{nuc} \right)\ $is the fraction of nucleotides in a contig whose sequence identity agrees with the aligned reads. $s\left( C_{cov} \right)$ is the fraction of nucleotides in a contig that have one or more mapped reads. $s\left( C_{ord} \right)$ is the fraction of reads that map to the contig in the correct orientation. $s(C_{seg})$ is the probability that the read coverage along the length of the contig is best explained by a single Dirichlet distribution, as opposed to two or more distributions. (B) The Spearman’s rank correlation coefficient between the contig score components, averaged across all species and assemblers.](figures/transrate_contig_score_component_distributions.png) {#fig:transrate_contig_score_components}
 
 Visual inspection of the global behavior of the contig level metrics
 suggested that the four scores could be classified into two groups based
 on the density function of the observed score values. Both
-$s(C_{\text{ord}})$ and $s(C_{\text{seg}})$ produced approximately
+$s(C_{ord})$ and $s(C_{seg})$ produced approximately
 uniform distributions spanning the entire score range (Figure 3A),
-whereas $s(C_{\text{cov}})$ and $s(C_{\text{nuc}})$ produced
+whereas $s(C_{cov})$ and $s(C_{nuc})$ produced
 distributions whose density increased towards higher values (Figure 3A).
 To determine if these visually similar distributions were correlated,
 and thus measured features of the assembled contigs that were
@@ -415,7 +415,7 @@ and Linux. *TransRate* can also be used programmatically as a Ruby gem.
 Reads are aligned to a given assembly using SNAP v1.0.0 (Zaharia et al.,
 2011). Alignments are reported up to a maximum edit distance of 30. Up
 to 10 multiple alignments are reported per read where available
-(`-``omax`` 10`), up to a maximum edit distance of 5 from the
+(`-omax 10`), up to a maximum edit distance of 5 from the
 best-scoring alignment (`-om 5`). Exploration within an edit distance of
 5 from each alignment is allowed for the calculation of MAPQ scores
 (`-D 5`). BAM-format alignments produced by SNAP are processed by Salmon
@@ -434,7 +434,7 @@ four intuitive properties.
 
 1.  **The identity of the nucleotides in the contig will accurately
     represent the nucleotides of the true transcript**
-    $s(C_{\text{nuc}})$. This score measures the extent to which the
+    $s(C_{nuc})$. This score measures the extent to which the
     nucleotides in the mapped reads are the same as those in the
     assembled contig. If the mapped reads do not support the nucleotides
     of the contig then this likely because: A) The non-supportive reads
@@ -455,7 +455,7 @@ four intuitive properties.
     reads, (see below).
 
 2.  **The number of nucleotides in the contig will accurately represent
-    the number in the true transcript** $s(C_{\text{cov}})$. This score
+    the number in the true transcript** $s(C_{cov})$. This score
     measures the proportion of nucleotides in the contig that have zero
     coverage and thus have no supporting read data. If there are
     nucleotides in the contig that are not covered by any reads
@@ -463,7 +463,7 @@ four intuitive properties.
     the contig) then this should negatively impact on the contig score.
 
 3.  **The order of the nucleotides in the contig will accurately
-    represent the order in the true transcript** $s(C_{\text{ord}})$.
+    represent the order in the true transcript** $s(C_{ord})$.
     This score measures the extent to which the order of the bases in
     contig are correct by analyzing the pairing information in the
     mapped reads. Here, if the orientation of the mapped reads does not
@@ -477,7 +477,7 @@ four intuitive properties.
     the available reads and thus is incompletely assembled.
 
 4.  **The contig will represent a single transcript**
-    $s(C_{\text{seg}})$. This score measures the probability that the
+    $s(C_{seg})$. This score measures the probability that the
     coverage depth of the transcript is univariate, i.e. that it
     represents an assembly of a single transcript and not a
     hybrid/chimeric assembly of multiple transcripts expressed at
@@ -492,29 +492,29 @@ The *TransRate* contig score is the product of the scores for each of
 these properties using the aligned reads as evidence. These four
 properties is evaluated as follows.
 
-##### Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{nuc}}}\mathbf{)}$
+##### Calculation of $s(C_{nuc})$
 
 The alignment edit distance is used to quantify the extent to which the
 contig sequence is correct. The alignment edit distance is the number of
 changes that must be made to the sequence of a read in order for it to
 perfectly match the contig sequence. Here the edit distance of an
-aligned read $r_{\text{ij}} \in R_{i}$ is denoted as $e_{r_{\text{ij}}}$
+aligned read $r_{ij} \in R_{i}$ is denoted as $e_{r_{ij}}$
 and the set of reads that cover nucleotide $k$
-($k \in \lbrack 1,n\rbrack$) as $\text{ϱk}$. The maximum possible edit
+($k \in \lbrack 1,n\rbrack$) as $ϱk$. The maximum possible edit
 distance for an alignment is limited by the read alignment algorithm
 (described in the Read alignment section above) and is denoted as
 $\hat{e}$. The support for the contig provided by the reads is then
-evaluated as $1 - \frac{e_{r_{\text{ij}}}}{\hat{e}}$ for each
+evaluated as $1 - \frac{e_{r_{ij}}}{\hat{e}}$ for each
 $r_{i} \in \varrho k$, and the mean of all support values is used to
-calculate $s(C_{\text{nuc}})$**.**
+calculate $s(C_{nuc})$**.**
 
-##### Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{cov}}}\mathbf{)}$
+##### Calculation of $s(C_{cov})$
 
 This score is evaluated as the fraction of nucleotides in the contig
 that receive at least one mapped read irrespective of the agreement
 between the read and the contig.
 
-##### Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{ord}}}\mathbf{)}$
+##### Calculation of $s(C_{ord})$
 
 The pairing information of the mapped reads is used to evaluate this
 score. To determine the parameters of the read library preparation a
@@ -529,10 +529,10 @@ reads in the pair align to the same contig, (b) the relative orientation
 of the reads in the pair is consistent with the inferred library
 preparation parameters, (c) the relative position of the reads is
 consistent with the mean and standard deviation of the inferred fragment
-size. $s(C_{\text{ord}})$ is then evaluated as the proportion of all
+size. $s(C_{ord})$ is then evaluated as the proportion of all
 mapped read pairs that are correct.
 
-##### Calculation of $\mathbf{s(}\mathbf{C}_{\mathbf{\text{seg}}}\mathbf{)}$
+##### Calculation of $s(C_{seg})$
 
 The per-nucleotide read coverage data is used to evaluate this score. To
 evaluate the probability that the contig originates from a single
@@ -554,7 +554,7 @@ method, the per-nucleotide coverage along the contig is encoded as a
 sequence of symbols in an unordered alphabet by taking log~2~ of the
 read depth rounded to the nearest integer. As the probability will be a
 value between 0 and 1, this probability is used directly as
-$s(C_{\text{seg}})$.
+$s(C_{seg})$.
 
 #### TransRate assembly score
 
@@ -574,11 +574,11 @@ mapped. The *TransRate* assembly score (*T*) is evaluated as the
 geometric mean of the mean contig score and the proportion of read pairs
 that map to the assembly such that
 
-$$T = \sqrt{\left( \prod_{c = 1}^{n}{s(C)} \right)^{\frac{1}{n}}R_{\text{valid}}}$$
+$$T = \sqrt{\left(\prod_{c = 1}^{n}{s(C)}\right)^{\frac{1}{n}}R_{valid}}$$
 
 Where
 
-$$s\left( C \right) = \ s(C_{\text{nuc}}\ )s(C_{\text{cov}}\ )s(C_{\text{ord}})s(C_{\text{seg}})$$
+$$s\left(C\right) = s(C_{nuc})s(C_{cov})s(C_{ord})s(C_{seg})$$
 
 #### Analysis of assemblies generated from real reads
 
@@ -636,9 +636,9 @@ Reciprocal best BLAST hits were identified and the accuracy of each
 contig assembled from simulated read data was evaluated as the contig
 F-score where
 
-$$Contig\ precision = \frac{\text{Number\ of\ correct\ nucleotides\ in\ contig}}{\text{Number\ of\ nucleotides\ in\ contig}}$$
+$$Contig\ precision = \frac{Number\ of\ correct\ nucleotides\ in\ contig}{Number\ of\ nucleotides\ in\ contig}$$
 
-$$Contig\ recall = \frac{\text{Number\ of\ correct\ nucleotides\ in\ contig}}{\text{Number\ of\ nucleotides\ in\ reference\ t}\text{ranscript}}$$
+$$Contig\ recall = \frac{Number\ of\ correct\ nucleotides\ in\ contig}{Number\ of\ nucleotides\ in\ reference\ transcript}$$
 
 $$Contig\ F - score = 2\ \left( \frac{(contig\ precision)(contig\ recall)}{(contig\ precision + contig\ recall)} \right)\ $$
 
