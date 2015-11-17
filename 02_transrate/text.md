@@ -172,13 +172,13 @@ Calculation of contig accuracy). Comparison of these measures revealed
 that there was a strong monotonic relationship between contig accuracy
 and *TransRate* contig score (Figure 4A). Across all simulated datasets,
 the *TransRate* contig score exhibited a Spearman’s rank correlation
-with contig accuracy of ρ = 0.71 (Figure 4A, Supplemental file 1). For
+with contig accuracy of $\rho$ = 0.71 (Figure 4A, Supplemental file 1). For
 comparison we also applied RSEM-eval to the same dataset (Figure 4B).
 Here, the contig impact score from RSEM-eval, which measures the
 relative contribution of every contig to the assembly score, also showed
 a positive correlation with contig accuracy, however the Spearman’s rank
 correlation with accuracy was lower than that observed for *TransRate*
-(ρ = 0.36, Supplemental file 1). Non-parametric correlation measures
+($\rho$ = 0.36, Supplemental file 1). Non-parametric correlation measures
 were used here to enable unbiased comparison of *TransRate* and
 RSEM-eval scores, as their score distributions differ in type, location,
 scale and shape.
@@ -499,14 +499,7 @@ contig sequence is correct. The alignment edit distance is the number of
 changes that must be made to the sequence of a read in order for it to
 perfectly match the contig sequence. Here the edit distance of an
 aligned read $r_{ij} \in R_{i}$ is denoted as $e_{r_{ij}}$
-and the set of reads that cover nucleotide $k$
-($k \in \lbrack 1,n\rbrack$) as $ϱk$. The maximum possible edit
-distance for an alignment is limited by the read alignment algorithm
-(described in the Read alignment section above) and is denoted as
-$\hat{e}$. The support for the contig provided by the reads is then
-evaluated as $1 - \frac{e_{r_{ij}}}{\hat{e}}$ for each
-$r_{i} \in \varrho k$, and the mean of all support values is used to
-calculate $s(C_{nuc})$**.**
+and the set of reads that cover nucleotide $k$ ($k \in \lbrack 1,n\rbrack$) as $\rho k$. The maximum possible edit distance for an alignment is limited by the read alignment algorithm (described in the Read alignment section above) and is denoted as $\hat{e}$. The support for the contig provided by the reads is then evaluated as $1 - \frac{e_{r_{ij}}}{\hat{e}}$ for each $r_{i} \in \varrho k$, and the mean of all support values is used to calculate $s(C_{nuc})$**.**
 
 ##### Calculation of $s(C_{cov})$
 
